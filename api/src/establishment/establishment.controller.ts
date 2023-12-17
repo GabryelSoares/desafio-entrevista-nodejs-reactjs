@@ -1,15 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Inject,
+} from '@nestjs/common';
 import { EstablishmentService } from './establishment.service';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
+import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
 
 @Controller('establishment')
 export class EstablishmentController {
+  @Inject(CreateEstablishmentUseCase)
+  private readonly createEstablishmentUseCase: CreateEstablishmentUseCase;
+
   constructor(private readonly establishmentService: EstablishmentService) {}
 
   @Post()
   create(@Body() createEstablishmentDto: CreateEstablishmentDto) {
-    return this.establishmentService.create(createEstablishmentDto);
+    return this.createEstablishmentUseCase.execute(createEstablishmentDto);
   }
 
   @Get()
@@ -23,7 +36,10 @@ export class EstablishmentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEstablishmentDto: UpdateEstablishmentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateEstablishmentDto: UpdateEstablishmentDto,
+  ) {
     return this.establishmentService.update(+id, updateEstablishmentDto);
   }
 

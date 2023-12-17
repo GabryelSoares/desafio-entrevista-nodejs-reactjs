@@ -1,13 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 
 @Injectable()
 export class EstablishmentService {
-  create(createEstablishmentDto: CreateEstablishmentDto) {
-    return 'This action adds a new establishment';
-  }
-
   findAll() {
     return `This action returns all establishment`;
   }
