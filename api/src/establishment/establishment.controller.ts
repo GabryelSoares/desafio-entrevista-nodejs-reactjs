@@ -13,6 +13,7 @@ import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
 import { FindAllEstablishmentsUseCase } from './use-cases/find-all-establishments-use-case';
+import { FindOneEstablishmentUseCase } from './use-cases/find-one-establishment-use-case';
 import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
 
 @Controller('establishment')
@@ -21,6 +22,8 @@ export class EstablishmentController {
   private readonly createEstablishmentUseCase: CreateEstablishmentUseCase;
   @Inject(FindAllEstablishmentsUseCase)
   private readonly findAllEstablishmentsUseCase: FindAllEstablishmentsUseCase;
+  @Inject(FindOneEstablishmentUseCase)
+  private readonly findOneEstablishmentsUseCase: FindOneEstablishmentUseCase;
   @Inject(UpdateEstablishmentUseCase)
   private readonly updateEstablishmentUseCase: UpdateEstablishmentUseCase;
 
@@ -38,7 +41,7 @@ export class EstablishmentController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.establishmentService.findOne(+id);
+    return this.findOneEstablishmentsUseCase.execute(+id);
   }
 
   @Patch(':id')
