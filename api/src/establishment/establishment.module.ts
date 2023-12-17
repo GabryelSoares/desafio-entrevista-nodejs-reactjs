@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { EstablishmentService } from './establishment.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { EstablishmentController } from './establishment.controller';
 import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
-import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
 import { FindAllEstablishmentsUseCase } from './use-cases/find-all-establishments-use-case';
 import { FindOneEstablishmentUseCase } from './use-cases/find-one-establishment-use-case';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { RemoveEstablishmentUseCase } from './use-cases/remove-establishment-use-case';
+import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
 import { Establishment } from './entities/establishment.entity';
 
 @Module({
@@ -13,10 +13,10 @@ import { Establishment } from './entities/establishment.entity';
   controllers: [EstablishmentController],
   providers: [
     CreateEstablishmentUseCase,
-    EstablishmentService,
-    UpdateEstablishmentUseCase,
     FindAllEstablishmentsUseCase,
     FindOneEstablishmentUseCase,
+    RemoveEstablishmentUseCase,
+    UpdateEstablishmentUseCase,
   ],
 })
 export class EstablishmentModule {}
