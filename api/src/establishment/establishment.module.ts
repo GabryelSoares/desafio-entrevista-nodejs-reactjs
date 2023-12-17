@@ -3,6 +3,7 @@ import { EstablishmentService } from './establishment.service';
 import { EstablishmentController } from './establishment.controller';
 import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
 import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
+import { FindAllEstablishmentsUseCase } from './use-cases/find-all-establishments-use-case';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Establishment } from './entities/establishment.entity';
 
@@ -13,6 +14,7 @@ import { Establishment } from './entities/establishment.entity';
     CreateEstablishmentUseCase,
     EstablishmentService,
     UpdateEstablishmentUseCase,
+    FindAllEstablishmentsUseCase,
   ],
 })
 export class EstablishmentModule {}
