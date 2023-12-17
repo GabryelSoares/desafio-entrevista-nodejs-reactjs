@@ -1,6 +1,18 @@
 version: '1'
 services:
 
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: parking
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
   app:
     build:
       context: .
