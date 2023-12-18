@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EstablishmentModule } from './establishment/establishment.module';
+import { EstablishmentModule } from './models/establishment/establishment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
