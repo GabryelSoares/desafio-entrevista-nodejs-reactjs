@@ -1,8 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Establishment } from '../entities/establishment.entity';
 
 @Injectable()
 export class FindOneEstablishmentUseCase {
-  execute(id: number) {
-    return `This action returns a #${id} establishment`;
+  constructor(
+    @InjectRepository(Establishment)
+    private readonly establishmentRepository: Repository<Establishment>,
+  ) {}
+  async execute(id: number) {
+    try {
+      return await this.establishmentRepository.findOneBy({ id });
+    } catch {
+      throw new NotFoundException();
+    }
   }
 }
