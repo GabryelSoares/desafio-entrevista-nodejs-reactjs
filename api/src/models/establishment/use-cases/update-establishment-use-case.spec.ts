@@ -63,6 +63,7 @@ describe('UpdateEstablishmentUseCase', () => {
   });
 
   it('should be defined', () => {
+    expect(findOneEstablishmentUseCase).toBeDefined();
     expect(updateEstablishmentUseCase).toBeDefined();
     expect(establishmentRepository).toBeDefined();
   });
