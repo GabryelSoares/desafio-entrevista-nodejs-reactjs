@@ -9,8 +9,8 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
-import { NotFoundSwagger } from 'src/helpers/swagger/not-found-request.swagger';
+import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
+import { NotFoundSwagger } from '../../helpers/swagger/not-found-request.swagger';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { CreateEstablishmentSwagger } from './swagger/create-establishment.swagger';
