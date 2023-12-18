@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
+import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
 import { Establishment } from './entities/establishment.entity';
 import { EstablishmentController } from './establishment.controller';
 import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
@@ -30,6 +31,17 @@ const newEstablishment: Establishment = new Establishment({
   phone: '99 99999-9999',
   motorcycleSlots: 10,
   carSlots: 10,
+});
+
+const updatedEstablishment: Establishment = new Establishment({
+  id: 1,
+  name: 'Beach Parking',
+  cnpj: '00.000.000/0000-00',
+  password: 'senha',
+  address: 'test@gmail.com',
+  phone: '99 99999-9999',
+  motorcycleSlots: 20,
+  carSlots: 20,
 });
 
 describe('EstablishmentController', () => {
@@ -63,7 +75,12 @@ describe('EstablishmentController', () => {
           },
         },
         { provide: RemoveEstablishmentUseCase, useValue: jest.fn() },
-        { provide: UpdateEstablishmentUseCase, useValue: jest.fn() },
+        {
+          provide: UpdateEstablishmentUseCase,
+          useValue: {
+            execute: jest.fn().mockResolvedValue(updatedEstablishment),
+          },
+        },
       ],
     }).compile();
 
@@ -161,6 +178,44 @@ describe('EstablishmentController', () => {
         .mockRejectedValueOnce(new Error('Error') as never);
 
       expect(createEstablishmentUseCase.execute(body)).rejects.toThrow('Error');
+    });
+  });
+
+  describe('update', () => {
+    it('should update a establishment item successfully', async () => {
+      const body: UpdateEstablishmentDto = {
+        name: 'Beach Parking',
+        cnpj: '00.000.000/0000-00',
+        password: 'senha',
+        address: 'test@gmail.com',
+        phone: '99 99999-9999',
+        motorcycleSlots: 20,
+        carSlots: 20,
+      };
+      const result = await updateEstablishmentUseCase.execute(1, body);
+
+      expect(result).toEqual(updatedEstablishment);
+      expect(updateEstablishmentUseCase.execute).toHaveBeenCalledTimes(1);
+      expect(updateEstablishmentUseCase.execute).toHaveBeenCalledWith(1, body);
+    });
+
+    it('should throw an exception', () => {
+      const body: UpdateEstablishmentDto = {
+        name: 'Beach Parking',
+        cnpj: '00.000.000/0000-00',
+        password: 'senha',
+        address: 'test@gmail.com',
+        phone: '99 99999-9999',
+        motorcycleSlots: 20,
+        carSlots: 20,
+      };
+      jest
+        .spyOn(updateEstablishmentUseCase, 'execute')
+        .mockRejectedValueOnce(new Error('Error') as never);
+
+      expect(updateEstablishmentUseCase.execute(1, body)).rejects.toThrow(
+        'Error',
+      );
     });
   });
 });
