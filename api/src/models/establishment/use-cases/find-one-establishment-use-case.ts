@@ -11,7 +11,7 @@ export class FindOneEstablishmentUseCase {
   ) {}
   async execute(id: number) {
     try {
-      return await this.establishmentRepository.findOneBy({ id });
+      return await this.establishmentRepository.findOneByOrFail({ id });
     } catch {
       throw new NotFoundException();
     }

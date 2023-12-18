@@ -43,7 +43,7 @@ describe('UpdateEstablishmentUseCase', () => {
           provide: getRepositoryToken(Establishment),
           useValue: {
             merge: jest.fn().mockReturnValue(updatedEstablishment),
-            findOneBy: jest.fn().mockResolvedValue(establishment),
+            findOneByOrFail: jest.fn().mockResolvedValue(establishment),
             save: jest.fn().mockResolvedValue(updatedEstablishment),
             update: jest.fn().mockResolvedValue(updatedEstablishment),
           },

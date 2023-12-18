@@ -27,7 +27,7 @@ describe('FindOneEstablishmentUseCase', () => {
         {
           provide: getRepositoryToken(Establishment),
           useValue: {
-            findOneBy: jest.fn().mockResolvedValue(establishment),
+            findOneByOrFail: jest.fn().mockResolvedValue(establishment),
           },
         },
       ],
@@ -51,12 +51,12 @@ describe('FindOneEstablishmentUseCase', () => {
       const result = await findOneEstablishmentUseCase.execute(1);
 
       expect(result).toEqual(establishment);
-      expect(establishmentRepository.findOneBy).toHaveBeenCalledTimes(1);
+      expect(establishmentRepository.findOneByOrFail).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an exception', () => {
       jest
-        .spyOn(establishmentRepository, 'findOneBy')
+        .spyOn(establishmentRepository, 'findOneByOrFail')
         .mockRejectedValueOnce(new Error() as never);
 
       expect(findOneEstablishmentUseCase.execute(1)).rejects.toThrow(
