@@ -56,7 +56,12 @@ describe('EstablishmentController', () => {
             execute: jest.fn().mockResolvedValue(establishmentList),
           },
         },
-        { provide: FindOneEstablishmentUseCase, useValue: jest.fn() },
+        {
+          provide: FindOneEstablishmentUseCase,
+          useValue: {
+            execute: jest.fn().mockResolvedValue(establishmentList[0]),
+          },
+        },
         { provide: RemoveEstablishmentUseCase, useValue: jest.fn() },
         { provide: UpdateEstablishmentUseCase, useValue: jest.fn() },
       ],
@@ -102,6 +107,24 @@ describe('EstablishmentController', () => {
         .mockRejectedValueOnce(new Error('Error') as never);
 
       expect(findAllEstablishmentsUseCase.execute()).rejects.toThrow('Error');
+    });
+  });
+
+  describe('find-one', () => {
+    it('should get a establishment successfully', async () => {
+      const result = await findOneEstablishmentUseCase.execute(1);
+
+      expect(result).toEqual(establishmentList[0]);
+      expect(findOneEstablishmentUseCase.execute).toHaveBeenCalledTimes(1);
+      expect(findOneEstablishmentUseCase.execute).toHaveBeenCalledWith(1);
+    });
+
+    it('should throw an exception', () => {
+      jest
+        .spyOn(findOneEstablishmentUseCase, 'execute')
+        .mockRejectedValueOnce(new Error('Error') as never);
+
+      expect(findOneEstablishmentUseCase.execute(1)).rejects.toThrow('Error');
     });
   });
 
