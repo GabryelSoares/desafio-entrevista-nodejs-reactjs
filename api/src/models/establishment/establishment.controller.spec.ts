@@ -74,7 +74,12 @@ describe('EstablishmentController', () => {
             execute: jest.fn().mockResolvedValue(establishmentList[0]),
           },
         },
-        { provide: RemoveEstablishmentUseCase, useValue: jest.fn() },
+        {
+          provide: RemoveEstablishmentUseCase,
+          useValue: {
+            execute: jest.fn().mockResolvedValue(undefined),
+          },
+        },
         {
           provide: UpdateEstablishmentUseCase,
           useValue: {
@@ -216,6 +221,24 @@ describe('EstablishmentController', () => {
       expect(updateEstablishmentUseCase.execute(1, body)).rejects.toThrow(
         'Error',
       );
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a establishment item successfully', async () => {
+      const result = await removeEstablishmentUseCase.execute(1);
+
+      expect(result).toBeUndefined();
+      expect(removeEstablishmentUseCase.execute).toHaveBeenCalledTimes(1);
+      expect(removeEstablishmentUseCase.execute).toHaveBeenCalledWith(1);
+    });
+
+    it('should throw an exception', () => {
+      jest
+        .spyOn(removeEstablishmentUseCase, 'execute')
+        .mockRejectedValueOnce(new Error('Error') as never);
+
+      expect(removeEstablishmentUseCase.execute(1)).rejects.toThrow('Error');
     });
   });
 });
