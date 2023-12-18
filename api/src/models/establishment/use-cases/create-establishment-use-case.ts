@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateEstablishmentDto } from '../dto/create-establishment.dto';
+import { Establishment } from '../entities/establishment.entity';
 
 @Injectable()
 export class CreateEstablishmentUseCase {
-  execute(createEstablishmentDto: CreateEstablishmentDto) {
-    console.log('createEstablishmentDto:: ', createEstablishmentDto);
-    return 'This action adds a new establishment';
+  constructor(
+    @InjectRepository(Establishment)
+    private readonly establishmentRepository: Repository<Establishment>,
+  ) {}
+  async execute(createEstablishmentDto: CreateEstablishmentDto) {
+    return await this.establishmentRepository.save(
+      this.establishmentRepository.create(createEstablishmentDto),
+    );
   }
 }
