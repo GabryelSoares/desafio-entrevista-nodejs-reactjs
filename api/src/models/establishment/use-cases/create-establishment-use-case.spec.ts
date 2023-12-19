@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateEstablishmentDto } from '../dto/create-establishment.dto';
 import { Establishment } from '../entities/establishment.entity';
 import { CreateEstablishmentUseCase } from './create-establishment-use-case';
+import { EstablishmentAlreadyExistsException } from 'src/helpers/exceptions/EstablishmentAlreadyExistsException';
 
 const establishment = new Establishment({
   id: 1,
@@ -29,6 +30,7 @@ describe('CreateEstablishmentUseCase', () => {
           useValue: {
             create: jest.fn().mockReturnValue(establishment),
             save: jest.fn().mockResolvedValue(establishment),
+            findOneBy: jest.fn(),
           },
         },
       ],
@@ -48,6 +50,31 @@ describe('CreateEstablishmentUseCase', () => {
   });
 
   describe('execute', () => {
+    it('should throw an exception if establishment with the same cnpj already exists', async () => {
+      const createEstablishmentDto: CreateEstablishmentDto = {
+        name: 'SeaPark',
+        cnpj: '00.000.000/0000-00',
+        password: 'senha',
+        address: 'test@gmail.com',
+        phone: '99 99999-9999',
+        motorcycleSlots: 10,
+        carSlots: 10,
+      };
+
+      jest
+        .spyOn(establishmentRepository, 'findOneBy')
+        .mockRejectedValueOnce(
+          new EstablishmentAlreadyExistsException(createEstablishmentDto.cnpj),
+        );
+
+      await expect(
+        createEstablishmentUseCase.execute(createEstablishmentDto),
+      ).rejects.toThrow(
+        new EstablishmentAlreadyExistsException(createEstablishmentDto.cnpj)
+          .message,
+      );
+    });
+
     it('should create a new establishment item successfully', async () => {
       const createEstablishmentDto: CreateEstablishmentDto = {
         name: 'SeaPark',
