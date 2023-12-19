@@ -35,14 +35,7 @@ export class Establishment {
   @ApiProperty()
   carSlots: number;
 
-  constructor(establishment?: Partial<Establishment>) {
-    this.id = establishment?.id;
-    this.name = establishment?.name;
-    this.cnpj = establishment?.cnpj;
-    this.password = establishment?.password;
-    this.address = establishment?.address;
-    this.phone = establishment?.phone;
-    this.motorcycleSlots = establishment?.motorcycleSlots;
-    this.carSlots = establishment?.carSlots;
+  constructor(partial: Partial<Establishment>) {
+    Object.assign(this, partial);
   }
 }
