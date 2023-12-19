@@ -11,6 +11,7 @@ import { Establishment } from './entities/establishment.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Establishment])],
   controllers: [EstablishmentController],
+  exports: [TypeOrmModule.forFeature([Establishment])],
   providers: [
     CreateEstablishmentUseCase,
     FindAllEstablishmentsUseCase,

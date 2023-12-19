@@ -1,5 +1,6 @@
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 import { Vehicle } from 'src/models/vehicle/entities/vehicle.entity';
+import mocks from '../..';
 
 export const listVehicles = (quantity = 4) => {
   return new Array(quantity).fill(null).map((_, index) => {
@@ -10,6 +11,7 @@ export const listVehicles = (quantity = 4) => {
         model: 'CG 160',
         color: 'Azul',
         type: VehicleTypeEnum.MOTORCYCLE,
+        parkingRegisters: mocks.models.parkingRegister.listRegisters(),
       });
     }
     return new Vehicle({

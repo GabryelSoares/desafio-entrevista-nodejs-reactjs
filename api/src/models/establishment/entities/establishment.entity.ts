@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ParkingRegister } from 'src/models/parking-register/entities/parking-register.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'establishments' })
 export class Establishment {
@@ -34,6 +35,14 @@ export class Establishment {
   @Column()
   @ApiProperty()
   carSlots: number;
+
+  @OneToMany(
+    () => ParkingRegister,
+    (parkingRegister) => parkingRegister.establishment,
+    { lazy: true, eager: false },
+  )
+  @ApiProperty({ type: () => ParkingRegister })
+  parkingRegisters: ParkingRegister[];
 
   constructor(partial: Partial<Establishment>) {
     Object.assign(this, partial);

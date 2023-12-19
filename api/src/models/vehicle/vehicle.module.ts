@@ -11,6 +11,7 @@ import { Vehicle } from './entities/vehicle.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Vehicle])],
   controllers: [VehicleController],
+  exports: [TypeOrmModule.forFeature([Vehicle])],
   providers: [
     CreateVehicleUseCase,
     FindAllVehiclesUseCase,
