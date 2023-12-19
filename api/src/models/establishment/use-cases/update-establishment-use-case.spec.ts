@@ -6,20 +6,11 @@ import { UpdateEstablishmentDto } from '../dto/update-establishment.dto';
 import { Establishment } from '../entities/establishment.entity';
 import { FindOneEstablishmentUseCase } from './find-one-establishment-use-case';
 import { UpdateEstablishmentUseCase } from './update-establishment-use-case';
+import mocks from 'src/helpers/mocks';
 
-const establishment = new Establishment({
-  id: 1,
-  name: 'SeaPark',
-  cnpj: '00.000.000/0000-00',
-  password: 'senha',
-  address: 'test@gmail.com',
-  phone: '99 99999-0022',
-  motorcycleSlots: 10,
-  carSlots: 10,
-});
+const establishment = mocks.models.establishment.createEstablishment();
 
-const updatedEstablishment = new Establishment({
-  id: 1,
+const updateEstablishmentDto: UpdateEstablishmentDto = {
   name: 'SeaPark',
   cnpj: '00.000.000/0000-00',
   password: 'senha',
@@ -27,6 +18,10 @@ const updatedEstablishment = new Establishment({
   phone: '99 99999-0022',
   motorcycleSlots: 30,
   carSlots: 30,
+};
+
+const updatedEstablishment = mocks.models.establishment.createEstablishment({
+  ...updateEstablishmentDto,
 });
 
 describe('UpdateEstablishmentUseCase', () => {
@@ -73,15 +68,6 @@ describe('UpdateEstablishmentUseCase', () => {
       jest
         .spyOn(findOneEstablishmentUseCase, 'execute')
         .mockRejectedValueOnce(new NotFoundException());
-      const updateEstablishmentDto: UpdateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-0022',
-        motorcycleSlots: 30,
-        carSlots: 30,
-      };
 
       await expect(
         updateEstablishmentUseCase.execute(1, updateEstablishmentDto),
@@ -89,15 +75,6 @@ describe('UpdateEstablishmentUseCase', () => {
     });
 
     it('should update a new establishment item successfully', async () => {
-      const updateEstablishmentDto: UpdateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-0022',
-        motorcycleSlots: 30,
-        carSlots: 30,
-      };
       jest
         .spyOn(establishmentRepository, 'save')
         .mockResolvedValueOnce(updatedEstablishment);
@@ -117,15 +94,6 @@ describe('UpdateEstablishmentUseCase', () => {
       jest
         .spyOn(establishmentRepository, 'save')
         .mockRejectedValueOnce(new Error('Error') as never);
-      const updateEstablishmentDto: UpdateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-0022',
-        motorcycleSlots: 30,
-        carSlots: 30,
-      };
 
       expect(
         updateEstablishmentUseCase.execute(1, updateEstablishmentDto),

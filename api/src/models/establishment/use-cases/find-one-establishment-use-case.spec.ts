@@ -4,17 +4,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Establishment } from '../entities/establishment.entity';
 import { FindOneEstablishmentUseCase } from './find-one-establishment-use-case';
+import mocks from 'src/helpers/mocks';
 
-const establishment = new Establishment({
-  id: 1,
-  name: 'SeaPark',
-  cnpj: '00.000.000/0000-00',
-  password: 'senha',
-  address: 'test@gmail.com',
-  phone: '99 99999-9999',
-  motorcycleSlots: 10,
-  carSlots: 10,
-});
+const establishment = mocks.models.establishment.createEstablishment();
 
 describe('FindOneEstablishmentUseCase', () => {
   let findOneEstablishmentUseCase: FindOneEstablishmentUseCase;

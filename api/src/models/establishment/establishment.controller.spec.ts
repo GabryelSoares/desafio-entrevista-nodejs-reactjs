@@ -1,29 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
-import { Establishment } from './entities/establishment.entity';
 import { EstablishmentController } from './establishment.controller';
 import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
 import { FindAllEstablishmentsUseCase } from './use-cases/find-all-establishments-use-case';
 import { FindOneEstablishmentUseCase } from './use-cases/find-one-establishment-use-case';
 import { RemoveEstablishmentUseCase } from './use-cases/remove-establishment-use-case';
 import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
+import mocks from 'src/helpers/mocks';
 
-const establishmentList: Establishment[] = [
-  new Establishment({
-    id: 1,
-    name: 'SeaPark',
-    cnpj: '00.000.000/0000-00',
-    password: 'senha',
-    address: 'test@gmail.com',
-    phone: '99 99999-9999',
-    motorcycleSlots: 10,
-    carSlots: 10,
-  }),
-];
+const establishmentList = mocks.models.establishment.listEstablishments();
 
-const newEstablishment: Establishment = new Establishment({
-  id: 1,
+const createEstablishmentDto: CreateEstablishmentDto = {
   name: 'SeaPark',
   cnpj: '00.000.000/0000-00',
   password: 'senha',
@@ -31,10 +19,12 @@ const newEstablishment: Establishment = new Establishment({
   phone: '99 99999-9999',
   motorcycleSlots: 10,
   carSlots: 10,
-});
+};
+const newEstablishment = mocks.models.establishment.createEstablishment(
+  createEstablishmentDto,
+);
 
-const updatedEstablishment: Establishment = new Establishment({
-  id: 1,
+const updateEstablishmentDto: UpdateEstablishmentDto = {
   name: 'Beach Parking',
   cnpj: '00.000.000/0000-00',
   password: 'senha',
@@ -42,7 +32,10 @@ const updatedEstablishment: Establishment = new Establishment({
   phone: '99 99999-9999',
   motorcycleSlots: 20,
   carSlots: 20,
-});
+};
+const updatedEstablishment = mocks.models.establishment.createEstablishment(
+  updateEstablishmentDto,
+);
 
 describe('EstablishmentController', () => {
   let controller: EstablishmentController;
@@ -152,75 +145,51 @@ describe('EstablishmentController', () => {
 
   describe('create', () => {
     it('should create a new establishment successfully', async () => {
-      const body: CreateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 10,
-        carSlots: 10,
-      };
-      const result = await createEstablishmentUseCase.execute(body);
+      const result = await createEstablishmentUseCase.execute(
+        createEstablishmentDto,
+      );
 
       expect(result).toEqual(newEstablishment);
       expect(createEstablishmentUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(createEstablishmentUseCase.execute).toHaveBeenCalledWith(body);
+      expect(createEstablishmentUseCase.execute).toHaveBeenCalledWith(
+        createEstablishmentDto,
+      );
     });
 
     it('should throw an exception', () => {
-      const body: CreateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 10,
-        carSlots: 10,
-      };
       jest
         .spyOn(createEstablishmentUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(createEstablishmentUseCase.execute(body)).rejects.toThrow('Error');
+      expect(
+        createEstablishmentUseCase.execute(createEstablishmentDto),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('update', () => {
     it('should update a establishment item successfully', async () => {
-      const body: UpdateEstablishmentDto = {
-        name: 'Beach Parking',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 20,
-        carSlots: 20,
-      };
-      const result = await updateEstablishmentUseCase.execute(1, body);
+      const result = await updateEstablishmentUseCase.execute(
+        1,
+        updateEstablishmentDto,
+      );
 
       expect(result).toEqual(updatedEstablishment);
       expect(updateEstablishmentUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(updateEstablishmentUseCase.execute).toHaveBeenCalledWith(1, body);
+      expect(updateEstablishmentUseCase.execute).toHaveBeenCalledWith(
+        1,
+        updateEstablishmentDto,
+      );
     });
 
     it('should throw an exception', () => {
-      const body: UpdateEstablishmentDto = {
-        name: 'Beach Parking',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 20,
-        carSlots: 20,
-      };
       jest
         .spyOn(updateEstablishmentUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(updateEstablishmentUseCase.execute(1, body)).rejects.toThrow(
-        'Error',
-      );
+      expect(
+        updateEstablishmentUseCase.execute(1, updateEstablishmentDto),
+      ).rejects.toThrow('Error');
     });
   });
 

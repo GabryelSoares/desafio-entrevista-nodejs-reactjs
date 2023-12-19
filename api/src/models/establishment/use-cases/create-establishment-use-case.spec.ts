@@ -5,9 +5,9 @@ import { CreateEstablishmentDto } from '../dto/create-establishment.dto';
 import { Establishment } from '../entities/establishment.entity';
 import { CreateEstablishmentUseCase } from './create-establishment-use-case';
 import { EstablishmentAlreadyExistsException } from 'src/helpers/exceptions/EstablishmentAlreadyExistsException';
+import mocks from 'src/helpers/mocks';
 
-const establishment = new Establishment({
-  id: 1,
+const createEstablishmentDto: CreateEstablishmentDto = {
   name: 'SeaPark',
   cnpj: '00.000.000/0000-00',
   password: 'senha',
@@ -15,6 +15,10 @@ const establishment = new Establishment({
   phone: '99 99999-9999',
   motorcycleSlots: 10,
   carSlots: 10,
+};
+
+const establishment = mocks.models.establishment.createEstablishment({
+  ...createEstablishmentDto,
 });
 
 describe('CreateEstablishmentUseCase', () => {
@@ -51,16 +55,6 @@ describe('CreateEstablishmentUseCase', () => {
 
   describe('execute', () => {
     it('should throw an exception if establishment with the same cnpj already exists', async () => {
-      const createEstablishmentDto: CreateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 10,
-        carSlots: 10,
-      };
-
       jest
         .spyOn(establishmentRepository, 'findOneBy')
         .mockRejectedValueOnce(
@@ -76,15 +70,6 @@ describe('CreateEstablishmentUseCase', () => {
     });
 
     it('should create a new establishment item successfully', async () => {
-      const createEstablishmentDto: CreateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 10,
-        carSlots: 10,
-      };
       const result = await createEstablishmentUseCase.execute(
         createEstablishmentDto,
       );
@@ -97,15 +82,6 @@ describe('CreateEstablishmentUseCase', () => {
     });
 
     it('should throw an exception', () => {
-      const createEstablishmentDto: CreateEstablishmentDto = {
-        name: 'SeaPark',
-        cnpj: '00.000.000/0000-00',
-        password: 'senha',
-        address: 'test@gmail.com',
-        phone: '99 99999-9999',
-        motorcycleSlots: 10,
-        carSlots: 10,
-      };
       jest
         .spyOn(establishmentRepository, 'save')
         .mockRejectedValueOnce(new Error('Error') as never);
