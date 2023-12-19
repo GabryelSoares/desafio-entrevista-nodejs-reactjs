@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
 
 export class EntryRegisterDto {
   @IsString()
-  @Length(7, 7)
+  @Matches(/^[A-Z]{3}-?[0-9][0-9A-Z][0-9]{2}$/, {
+    message: 'Invalid Mercosul vehicle plate format',
+  })
+  @Transform(({ value }) => value.replace('-', ''))
   @IsNotEmpty()
   @ApiProperty()
   vehiclePlate: string;

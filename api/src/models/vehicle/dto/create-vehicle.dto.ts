@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 
 export class CreateVehicleDto {
@@ -19,7 +20,10 @@ export class CreateVehicleDto {
   color: string;
 
   @IsString()
-  @Length(7, 7)
+  @Matches(/^[A-Z]{3}-?[0-9][0-9A-Z][0-9]{2}$/, {
+    message: 'Invalid Mercosul vehicle plate format',
+  })
+  @Transform(({ value }) => value.replace('-', ''))
   @IsNotEmpty()
   @ApiProperty()
   plate: string;
