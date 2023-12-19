@@ -7,24 +7,18 @@ import { Vehicle } from '../entities/vehicle.entity';
 import { FindOneVehicleUseCase } from './find-one-vehicle-use-case';
 import { UpdateVehicleUseCase } from './update-vehicle-use-case';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
+import mocks from 'src/helpers/mocks';
 
-const vehicle = new Vehicle({
-  id: 1,
-  brand: 'Honda',
-  model: 'Biz',
-  color: 'Branca',
-  plate: 'AAA-0A00',
-  type: VehicleTypeEnum.MOTORCYCLE,
-});
+const vehicle = mocks.models.vehicle.createVehicle();
 
-const updatedVehicle = new Vehicle({
-  id: 1,
+const updateVehicleDto: UpdateVehicleDto = {
   brand: 'Honda',
   model: 'CG 160',
   color: 'Vermelha',
   plate: 'DDD-0A00',
   type: VehicleTypeEnum.MOTORCYCLE,
-});
+};
+const updatedVehicle = mocks.models.vehicle.createVehicle(updateVehicleDto);
 
 describe('UpdateVehicleUseCase', () => {
   let updateVehicleUseCase: UpdateVehicleUseCase;
@@ -69,13 +63,6 @@ describe('UpdateVehicleUseCase', () => {
       jest
         .spyOn(findOneVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new NotFoundException());
-      const updateVehicleDto: UpdateVehicleDto = {
-        brand: 'Honda',
-        model: 'CG 160',
-        color: 'Vermelha',
-        plate: 'DDD-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
 
       await expect(
         updateVehicleUseCase.execute(1, updateVehicleDto),
@@ -83,13 +70,6 @@ describe('UpdateVehicleUseCase', () => {
     });
 
     it('should update a new vehicle item successfully', async () => {
-      const updateVehicleDto: UpdateVehicleDto = {
-        brand: 'Honda',
-        model: 'CG 160',
-        color: 'Vermelha',
-        plate: 'DDD-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
       jest
         .spyOn(vehicleRepository, 'save')
         .mockResolvedValueOnce(updatedVehicle);
@@ -104,13 +84,6 @@ describe('UpdateVehicleUseCase', () => {
       jest
         .spyOn(vehicleRepository, 'save')
         .mockRejectedValueOnce(new Error('Error') as never);
-      const updateVehicleDto: UpdateVehicleDto = {
-        brand: 'Honda',
-        model: 'CG 160',
-        color: 'Vermelha',
-        plate: 'DDD-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
 
       expect(updateVehicleUseCase.execute(1, updateVehicleDto)).rejects.toThrow(
         'Error',

@@ -6,15 +6,9 @@ import { Vehicle } from '../entities/vehicle.entity';
 import { CreateVehicleUseCase } from './create-vehicle-use-case';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 import { VehicleAlreadyExistsException } from 'src/helpers/exceptions/VehicleAlreadyExistsException';
+import mocks from 'src/helpers/mocks';
 
-const vehicle = new Vehicle({
-  id: 1,
-  brand: 'Honda',
-  model: 'Biz',
-  color: 'Branca',
-  plate: 'AAA-0A00',
-  type: VehicleTypeEnum.MOTORCYCLE,
-});
+const vehicle = mocks.models.vehicle.createVehicle();
 
 describe('CreateVehicleUseCase', () => {
   let createVehicleUseCase: CreateVehicleUseCase;
@@ -57,14 +51,12 @@ describe('CreateVehicleUseCase', () => {
         type: VehicleTypeEnum.MOTORCYCLE,
       };
 
-      // Simule que já existe um veículo com a mesma placa no banco de dados
       jest
         .spyOn(vehicleRepository, 'findOneBy')
         .mockRejectedValueOnce(
           new VehicleAlreadyExistsException(createVehicleDto.plate),
         );
 
-      // Certifique-se de que a chamada ao método execute resulta em uma exceção de VehicleAlreadyExistsException
       await expect(
         createVehicleUseCase.execute(createVehicleDto),
       ).rejects.toThrow(

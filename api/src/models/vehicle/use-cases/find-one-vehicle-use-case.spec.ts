@@ -4,16 +4,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehicle } from '../entities/vehicle.entity';
 import { FindOneVehicleUseCase } from './find-one-vehicle-use-case';
-import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
+import mocks from 'src/helpers/mocks';
 
-const vehicle = new Vehicle({
-  id: 1,
-  brand: 'Honda',
-  model: 'Biz',
-  color: 'Branca',
-  plate: 'AAA-0A00',
-  type: VehicleTypeEnum.MOTORCYCLE,
-});
+const vehicle = mocks.models.vehicle.createVehicle();
 
 describe('FindOneVehicleUseCase', () => {
   let findOneVehicleUseCase: FindOneVehicleUseCase;

@@ -9,34 +9,31 @@ import { FindOneVehicleUseCase } from './use-cases/find-one-vehicle-use-case';
 import { RemoveVehicleUseCase } from './use-cases/remove-vehicle-use-case';
 import { UpdateVehicleUseCase } from './use-cases/update-vehicle-use-case';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
+import mocks from 'src/helpers/mocks';
 
-const vehicleList: Vehicle[] = [
-  new Vehicle({
-    id: 1,
-    brand: 'Honda',
-    model: 'CG 160',
-    color: 'Vermelha',
-    plate: 'DDD-0A00',
-    type: VehicleTypeEnum.MOTORCYCLE,
-  }),
-];
+const vehicleList: Vehicle[] = mocks.models.vehicle.listVehicles();
 
-const newVehicle: Vehicle = new Vehicle({
-  id: 1,
+const createVehicleDto: CreateVehicleDto = {
   brand: 'Honda',
   model: 'CG 160',
   color: 'Vermelha',
   plate: 'DDD-0A00',
   type: VehicleTypeEnum.MOTORCYCLE,
-});
+};
 
-const updatedVehicle: Vehicle = new Vehicle({
-  id: 1,
+const updateVehicleDto: UpdateVehicleDto = {
   brand: 'Honda',
   model: 'Biz',
   color: 'Branca',
   plate: 'AAA-0A00',
   type: VehicleTypeEnum.MOTORCYCLE,
+};
+
+const newVehicle: Vehicle = new Vehicle({ id: 1, ...createVehicleDto });
+
+const updatedVehicle: Vehicle = new Vehicle({
+  id: 1,
+  ...updateVehicleDto,
 });
 
 describe('VehicleController', () => {
@@ -144,65 +141,46 @@ describe('VehicleController', () => {
 
   describe('create', () => {
     it('should create a new vehicle successfully', async () => {
-      const body: CreateVehicleDto = {
-        brand: 'Honda',
-        model: 'CG 160',
-        color: 'Vermelha',
-        plate: 'DDD-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
-      const result = await createVehicleUseCase.execute(body);
+      const result = await createVehicleUseCase.execute(createVehicleDto);
 
       expect(result).toEqual(newVehicle);
       expect(createVehicleUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(createVehicleUseCase.execute).toHaveBeenCalledWith(body);
+      expect(createVehicleUseCase.execute).toHaveBeenCalledWith(
+        createVehicleDto,
+      );
     });
 
     it('should throw an exception', () => {
-      const body: CreateVehicleDto = {
-        brand: 'Honda',
-        model: 'CG 160',
-        color: 'Vermelha',
-        plate: 'DDD-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
       jest
         .spyOn(createVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(createVehicleUseCase.execute(body)).rejects.toThrow('Error');
+      expect(createVehicleUseCase.execute(createVehicleDto)).rejects.toThrow(
+        'Error',
+      );
     });
   });
 
   describe('update', () => {
     it('should update a vehicle item successfully', async () => {
-      const body: UpdateVehicleDto = {
-        brand: 'Honda',
-        model: 'Biz',
-        color: 'Branca',
-        plate: 'AAA-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
-      const result = await updateVehicleUseCase.execute(1, body);
+      const result = await updateVehicleUseCase.execute(1, updateVehicleDto);
 
       expect(result).toEqual(updatedVehicle);
       expect(updateVehicleUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(updateVehicleUseCase.execute).toHaveBeenCalledWith(1, body);
+      expect(updateVehicleUseCase.execute).toHaveBeenCalledWith(
+        1,
+        updateVehicleDto,
+      );
     });
 
     it('should throw an exception', () => {
-      const body: UpdateVehicleDto = {
-        brand: 'Honda',
-        model: 'Biz',
-        color: 'Branca',
-        plate: 'AAA-0A00',
-        type: VehicleTypeEnum.MOTORCYCLE,
-      };
       jest
         .spyOn(updateVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(updateVehicleUseCase.execute(1, body)).rejects.toThrow('Error');
+      expect(updateVehicleUseCase.execute(1, updateVehicleDto)).rejects.toThrow(
+        'Error',
+      );
     });
   });
 
