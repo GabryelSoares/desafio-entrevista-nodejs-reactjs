@@ -9,7 +9,12 @@ import {
   Inject,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
 import { NotFoundSwagger } from '../../helpers/swagger/not-found-request.swagger';
 import { EntryRegisterDto } from './dto/entry-register.dto';
@@ -26,6 +31,7 @@ import { ExitRegisterUseCase } from './use-cases/exit-register-use-case';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller('parkingRegisters')
 @ApiTags('parkingRegisters')
 export class ParkingRegisterController {

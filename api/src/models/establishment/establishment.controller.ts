@@ -8,7 +8,12 @@ import {
   Inject,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
 import { NotFoundSwagger } from '../../helpers/swagger/not-found-request.swagger';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
@@ -22,6 +27,7 @@ import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller('establishments')
 @ApiTags('establishments')
 export class EstablishmentController {

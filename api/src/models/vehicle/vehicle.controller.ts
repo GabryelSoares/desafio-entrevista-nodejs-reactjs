@@ -9,7 +9,12 @@ import {
   Inject,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
 import { NotFoundSwagger } from '../../helpers/swagger/not-found-request.swagger';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
@@ -26,6 +31,7 @@ import { UpdateVehicleUseCase } from './use-cases/update-vehicle-use-case';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller('vehicles')
 @ApiTags('vehicles')
 export class VehicleController {
