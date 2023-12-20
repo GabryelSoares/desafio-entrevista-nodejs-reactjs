@@ -7,7 +7,8 @@ import { NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import mocks from 'src/helpers/mocks';
 
-const vehicle = mocks.models.vehicle.createVehicle();
+const establishment = mocks.models.establishment.createEstablishment();
+const vehicle = mocks.models.vehicle.createVehicle({ establishment });
 
 describe('RemoveVehicleUseCase', () => {
   let findOneVehicleUseCase: FindOneVehicleUseCase;
@@ -22,7 +23,7 @@ describe('RemoveVehicleUseCase', () => {
         {
           provide: getRepositoryToken(Vehicle),
           useValue: {
-            delete: jest.fn().mockReturnValue(undefined),
+            delete: jest.fn().mockResolvedValue(undefined),
             findOneByOrFail: jest.fn().mockResolvedValue(vehicle),
           },
         },
@@ -50,17 +51,20 @@ describe('RemoveVehicleUseCase', () => {
         .spyOn(findOneVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new NotFoundException());
 
-      await expect(removeVehicleUseCase.execute(1)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        removeVehicleUseCase.execute(1, vehicle.establishment.id),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should remove a vehicle item successfully', async () => {
-      const result = await removeVehicleUseCase.execute(1);
+      jest.spyOn(vehicleRepository, 'delete').mockResolvedValueOnce(undefined);
+      const result = await removeVehicleUseCase.execute(
+        vehicle.id,
+        vehicle.establishment.id,
+      );
 
-      expect(result).toBeUndefined();
-      expect(vehicleRepository.delete).toHaveBeenCalledWith(1);
       expect(vehicleRepository.delete).toHaveBeenCalledTimes(1);
+      expect(result).toBeUndefined();
     });
 
     it('should throw an exception', () => {
@@ -68,7 +72,9 @@ describe('RemoveVehicleUseCase', () => {
         .spyOn(vehicleRepository, 'delete')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(removeVehicleUseCase.execute(1)).rejects.toThrow('Error');
+      expect(
+        removeVehicleUseCase.execute(1, vehicle.establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 });

@@ -20,6 +20,8 @@ const createEstablishmentDto: CreateEstablishmentDto = {
 
 const establishment = mocks.models.establishment.createEstablishment({
   ...createEstablishmentDto,
+  availableCarSlots: createEstablishmentDto.carSlots,
+  availableMotorcycleSlots: createEstablishmentDto.motorcycleSlots,
 });
 
 describe('CreateEstablishmentUseCase', () => {
@@ -33,7 +35,7 @@ describe('CreateEstablishmentUseCase', () => {
         {
           provide: getRepositoryToken(Establishment),
           useValue: {
-            create: jest.fn().mockReturnValue(establishment),
+            create: jest.fn().mockResolvedValue(establishment),
             save: jest.fn().mockResolvedValue(establishment),
             findOneBy: jest.fn(),
           },
@@ -70,6 +72,16 @@ describe('CreateEstablishmentUseCase', () => {
       );
     });
 
+    it('should add available slots', async () => {
+      await createEstablishmentUseCase.execute(createEstablishmentDto);
+      expect(establishmentRepository.create).toHaveBeenCalledWith({
+        ...createEstablishmentDto,
+        availableCarSlots: createEstablishmentDto.carSlots,
+        availableMotorcycleSlots: createEstablishmentDto.motorcycleSlots,
+      });
+      expect(establishmentRepository.create).toHaveBeenCalledTimes(1);
+    });
+
     it('should create a new establishment item successfully', async () => {
       const result = await createEstablishmentUseCase.execute(
         createEstablishmentDto,
@@ -77,9 +89,6 @@ describe('CreateEstablishmentUseCase', () => {
       const establishmentWithoutPassord = { ...establishment };
       delete establishmentWithoutPassord.password;
       expect(result).toEqual(establishmentWithoutPassord);
-      expect(establishmentRepository.create).toHaveBeenCalledWith(
-        createEstablishmentDto,
-      );
       expect(establishmentRepository.create).toHaveBeenCalledTimes(1);
     });
 

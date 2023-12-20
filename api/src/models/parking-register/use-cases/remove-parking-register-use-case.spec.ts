@@ -28,7 +28,7 @@ describe('RemoveParkingRegisterUseCase', () => {
         {
           provide: getRepositoryToken(ParkingRegister),
           useValue: {
-            delete: jest.fn().mockReturnValue(undefined),
+            delete: jest.fn().mockResolvedValue(undefined),
             findOneByOrFail: jest.fn().mockResolvedValue(parkingRegister),
           },
         },
@@ -57,13 +57,16 @@ describe('RemoveParkingRegisterUseCase', () => {
         .spyOn(parkingRegisterRepository, 'findOneByOrFail')
         .mockRejectedValueOnce(new ParkingRegisterNotFoundException(1));
 
-      await expect(removeParkingRegisterUseCase.execute(1)).rejects.toThrow(
-        new ParkingRegisterNotFoundException(1).message,
-      );
+      await expect(
+        removeParkingRegisterUseCase.execute(1, establishment.id),
+      ).rejects.toThrow(new ParkingRegisterNotFoundException(1).message);
     });
 
     it('should remove a parkingRegister item successfully', async () => {
-      const result = await removeParkingRegisterUseCase.execute(1);
+      const result = await removeParkingRegisterUseCase.execute(
+        1,
+        establishment.id,
+      );
 
       expect(result).toBeUndefined();
       expect(parkingRegisterRepository.delete).toHaveBeenCalledWith(1);
@@ -75,7 +78,9 @@ describe('RemoveParkingRegisterUseCase', () => {
         .spyOn(parkingRegisterRepository, 'delete')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(removeParkingRegisterUseCase.execute(1)).rejects.toThrow('Error');
+      expect(
+        removeParkingRegisterUseCase.execute(1, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 });

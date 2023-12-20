@@ -1,15 +1,16 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EstablishmentModule } from './models/establishment/establishment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VehicleModule } from './models/vehicle/vehicle.module';
 import { ParkingRegisterModule } from './models/parking-register/parking-register.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthMiddleware } from './auth/auth.middleware';
+import { ParkingRegisterController } from './models/parking-register/parking-register.controller';
+import { VehicleController } from './models/vehicle/vehicle.controller';
 
 @Module({
   imports: [
-    EstablishmentModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -20,11 +21,18 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
       synchronize: true,
     }),
+    AuthModule,
+    EstablishmentModule,
     VehicleModule,
     ParkingRegisterModule,
-    AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes(ParkingRegisterController, VehicleController);
+  }
+}

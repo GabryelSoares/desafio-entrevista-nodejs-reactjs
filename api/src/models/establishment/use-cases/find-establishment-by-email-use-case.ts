@@ -10,6 +10,10 @@ export class FindEstablishmentByEmailUseCase {
     private readonly establishmentRepository: Repository<Establishment>,
   ) {}
   async execute(email: string) {
-    return await this.establishmentRepository.findOneBy({ email });
+    return await this.establishmentRepository
+      .createQueryBuilder('establishment')
+      .select(['establishment.id'])
+      .where('establishment.email = :email', { email })
+      .getOne();
   }
 }

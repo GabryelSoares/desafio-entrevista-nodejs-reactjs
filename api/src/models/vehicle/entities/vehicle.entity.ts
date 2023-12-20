@@ -6,10 +6,12 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 import { ParkingRegister } from 'src/models/parking-register/entities/parking-register.entity';
+import { Establishment } from 'src/models/establishment/entities/establishment.entity';
 
 @Entity({ name: 'vehicles' })
 export class Vehicle {
@@ -51,6 +53,9 @@ export class Vehicle {
   @DeleteDateColumn()
   @ApiProperty()
   deletedAt: Date;
+
+  @ManyToOne(() => Establishment, (establishment) => establishment.vehicles)
+  establishment: Establishment;
 
   @OneToMany(
     () => ParkingRegister,

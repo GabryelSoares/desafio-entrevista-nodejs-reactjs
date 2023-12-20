@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class ExitRegisterDto {
   @IsString()
@@ -11,9 +11,4 @@ export class ExitRegisterDto {
   @IsNotEmpty()
   @ApiProperty()
   vehiclePlate: string;
-
-  @ApiProperty()
-  @IsNumber()
-  @IsNotEmpty()
-  establishmentId: number;
 }

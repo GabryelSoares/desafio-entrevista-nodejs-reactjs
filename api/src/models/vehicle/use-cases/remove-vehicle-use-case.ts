@@ -11,8 +11,8 @@ export class RemoveVehicleUseCase {
     private readonly vehicleRepository: Repository<Vehicle>,
     private readonly findOneVehicleUseCase: FindOneVehicleUseCase,
   ) {}
-  async execute(id: number) {
-    await this.findOneVehicleUseCase.execute(id);
+  async execute(id: number, establishmentId: number) {
+    await this.findOneVehicleUseCase.execute(id, establishmentId);
     return await this.vehicleRepository.delete(id);
   }
 }

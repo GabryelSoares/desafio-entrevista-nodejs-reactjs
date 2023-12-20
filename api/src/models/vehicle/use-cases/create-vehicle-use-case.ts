@@ -12,9 +12,12 @@ export class CreateVehicleUseCase {
     private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
 
-  async execute(createVehicleDto: CreateVehicleDto) {
+  async execute(createVehicleDto: CreateVehicleDto, establishmentId) {
     const existingVehicle = await this.vehicleRepository.findOneBy({
       plate: createVehicleDto.plate,
+      establishment: {
+        id: establishmentId,
+      },
     });
 
     if (existingVehicle) {

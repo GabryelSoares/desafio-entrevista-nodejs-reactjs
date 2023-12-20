@@ -9,10 +9,11 @@ export class FindAllParkingRegistersUseCase {
     @InjectRepository(ParkingRegister)
     private readonly parkingRegisterRepository: Repository<ParkingRegister>,
   ) {}
-  async execute() {
+  async execute(establishmentId: number) {
     return await this.parkingRegisterRepository.find({
       order: { id: 'DESC' },
       relations: ['vehicle', 'establishment'],
+      where: { establishment: { id: establishmentId } },
     });
   }
 }

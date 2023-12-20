@@ -9,12 +9,14 @@ import { ExitRegisterUseCase } from './use-cases/exit-register-use-case';
 import { ParkingRegister } from './entities/parking-register.entity';
 import { VehicleModule } from '../vehicle/vehicle.module';
 import { EstablishmentModule } from '../establishment/establishment.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ParkingRegister]),
     VehicleModule,
     EstablishmentModule,
+    AuthModule,
   ],
   controllers: [ParkingRegisterController],
   providers: [

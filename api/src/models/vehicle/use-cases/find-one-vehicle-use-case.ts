@@ -9,9 +9,14 @@ export class FindOneVehicleUseCase {
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
-  async execute(id: number) {
+  async execute(id: number, establishmentId: number) {
     try {
-      return await this.vehicleRepository.findOneByOrFail({ id });
+      return await this.vehicleRepository.findOneByOrFail({
+        id,
+        establishment: {
+          id: establishmentId,
+        },
+      });
     } catch {
       throw new NotFoundException();
     }

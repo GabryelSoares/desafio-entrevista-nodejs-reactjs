@@ -11,12 +11,14 @@ import { VehicleNotFoundException } from 'src/helpers/exceptions/VehicleNotFound
 import * as mockdate from 'mockdate';
 import { Establishment } from 'src/models/establishment/entities/establishment.entity';
 import { EstablishmentNotFoundException } from 'src/helpers/exceptions/EstablishmentNotFoundException';
+import { NoAvailableParkingSpaceException } from 'src/helpers/exceptions/NoAvailableParkingSpaceException';
+import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 
 const vehicle = mocks.models.vehicle.createVehicle();
 const establishment = mocks.models.establishment.createEstablishment();
 const entryRegisterDto: EntryRegisterDto = {
   vehiclePlate: vehicle.plate,
-  establishmentId: establishment.id,
+  vehicleType: vehicle.type,
 };
 const parkingRegister = new ParkingRegister({
   entry: new Date('2023-01-01T00:00:00.000Z'),
@@ -36,7 +38,7 @@ describe('CreateParkingRegisterUseCase', () => {
         {
           provide: getRepositoryToken(ParkingRegister),
           useValue: {
-            create: jest.fn().mockReturnValue(parkingRegister),
+            create: jest.fn().mockResolvedValue(parkingRegister),
             save: jest.fn().mockResolvedValue(parkingRegister),
             findOneBy: jest.fn(),
           },
@@ -44,7 +46,7 @@ describe('CreateParkingRegisterUseCase', () => {
         {
           provide: getRepositoryToken(Vehicle),
           useValue: {
-            findOneByOrFail: jest.fn().mockResolvedValue(vehicle),
+            findOneBy: jest.fn().mockResolvedValue(vehicle),
           },
         },
         {
@@ -85,12 +87,15 @@ describe('CreateParkingRegisterUseCase', () => {
   describe('execute', () => {
     it('should throw an exception if vehicle not found', async () => {
       jest
-        .spyOn(vehicleRepository, 'findOneByOrFail')
+        .spyOn(vehicleRepository, 'findOneBy')
         .mockRejectedValueOnce(
           new VehicleNotFoundException(entryRegisterDto.vehiclePlate),
         );
       await expect(
-        createParkingRegisterUseCase.execute(entryRegisterDto),
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
       ).rejects.toThrow(
         new VehicleNotFoundException(entryRegisterDto.vehiclePlate).message,
       );
@@ -100,13 +105,15 @@ describe('CreateParkingRegisterUseCase', () => {
       jest
         .spyOn(establishmentRepository, 'findOneByOrFail')
         .mockRejectedValueOnce(
-          new EstablishmentNotFoundException(entryRegisterDto.establishmentId),
+          new EstablishmentNotFoundException(establishment.id),
         );
       await expect(
-        createParkingRegisterUseCase.execute(entryRegisterDto),
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
       ).rejects.toThrow(
-        new EstablishmentNotFoundException(entryRegisterDto.establishmentId)
-          .message,
+        new EstablishmentNotFoundException(establishment.id).message,
       );
     });
 
@@ -119,16 +126,49 @@ describe('CreateParkingRegisterUseCase', () => {
           ),
         );
       await expect(
-        createParkingRegisterUseCase.execute(entryRegisterDto),
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
       ).rejects.toThrow(
         new ParkingRegisterAlreadyExistsException(entryRegisterDto.vehiclePlate)
           .message,
       );
     });
 
+    it('should throw an exception if has not available car space', async () => {
+      jest.spyOn(establishmentRepository, 'findOneByOrFail').mockResolvedValue({
+        ...establishment,
+        vehicleType: VehicleTypeEnum.CAR,
+        availableMotorcycleSlots: 0,
+      } as never);
+      await expect(
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
+      ).rejects.toThrow(new NoAvailableParkingSpaceException().message);
+    });
+
+    it('should throw an exception if has not available motorcycle space', async () => {
+      jest.spyOn(establishmentRepository, 'findOneByOrFail').mockResolvedValue({
+        ...establishment,
+        vehicleType: VehicleTypeEnum.MOTORCYCLE,
+        availableMotorcycleSlots: 0,
+      } as never);
+      await expect(
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
+      ).rejects.toThrow(new NoAvailableParkingSpaceException().message);
+    });
+
     it('should create a new parkingRegister item successfully', async () => {
-      const result =
-        await createParkingRegisterUseCase.execute(entryRegisterDto);
+      const result = await createParkingRegisterUseCase.execute(
+        entryRegisterDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(parkingRegister);
       expect(parkingRegisterRepository.create).toHaveBeenCalledWith({
@@ -145,7 +185,10 @@ describe('CreateParkingRegisterUseCase', () => {
         .mockRejectedValueOnce(new Error('Error') as never);
 
       expect(
-        createParkingRegisterUseCase.execute(entryRegisterDto),
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
       ).rejects.toThrow('Error');
     });
   });

@@ -11,8 +11,8 @@ export class RemoveParkingRegisterUseCase {
     private readonly parkingRegisterRepository: Repository<ParkingRegister>,
     private readonly findOneParkingRegisterUseCase: FindOneParkingRegisterUseCase,
   ) {}
-  async execute(id: number) {
-    await this.findOneParkingRegisterUseCase.execute(id);
+  async execute(id: number, establishmentId: number) {
+    await this.findOneParkingRegisterUseCase.execute(id, establishmentId);
     return await this.parkingRegisterRepository.delete(id);
   }
 }

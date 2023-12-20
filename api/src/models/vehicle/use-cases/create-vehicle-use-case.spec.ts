@@ -8,7 +8,8 @@ import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 import { VehicleAlreadyExistsException } from 'src/helpers/exceptions/VehicleAlreadyExistsException';
 import mocks from 'src/helpers/mocks';
 
-const vehicle = mocks.models.vehicle.createVehicle();
+const establishment = mocks.models.establishment.createEstablishment();
+const vehicle = mocks.models.vehicle.createVehicle({ establishment });
 
 describe('CreateVehicleUseCase', () => {
   let createVehicleUseCase: CreateVehicleUseCase;
@@ -21,7 +22,7 @@ describe('CreateVehicleUseCase', () => {
         {
           provide: getRepositoryToken(Vehicle),
           useValue: {
-            create: jest.fn().mockReturnValue(vehicle),
+            create: jest.fn().mockResolvedValue(vehicle),
             save: jest.fn().mockResolvedValue(vehicle),
             findOneBy: jest.fn(),
           },
@@ -58,7 +59,7 @@ describe('CreateVehicleUseCase', () => {
         );
 
       await expect(
-        createVehicleUseCase.execute(createVehicleDto),
+        createVehicleUseCase.execute(createVehicleDto, establishment.id),
       ).rejects.toThrow(
         new VehicleAlreadyExistsException(createVehicleDto.plate).message,
       );
@@ -72,7 +73,10 @@ describe('CreateVehicleUseCase', () => {
         plate: 'AAA-0A00',
         type: VehicleTypeEnum.MOTORCYCLE,
       };
-      const result = await createVehicleUseCase.execute(createVehicleDto);
+      const result = await createVehicleUseCase.execute(
+        createVehicleDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(vehicle);
       expect(vehicleRepository.create).toHaveBeenCalledWith(createVehicleDto);
@@ -91,9 +95,9 @@ describe('CreateVehicleUseCase', () => {
         .spyOn(vehicleRepository, 'save')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(createVehicleUseCase.execute(createVehicleDto)).rejects.toThrow(
-        'Error',
-      );
+      expect(
+        createVehicleUseCase.execute(createVehicleDto, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 });

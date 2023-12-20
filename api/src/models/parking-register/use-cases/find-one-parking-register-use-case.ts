@@ -10,9 +10,12 @@ export class FindOneParkingRegisterUseCase {
     @InjectRepository(ParkingRegister)
     private readonly parkingRegisterRepository: Repository<ParkingRegister>,
   ) {}
-  async execute(id: number) {
+  async execute(id: number, establishmentId: number) {
     try {
-      return await this.parkingRegisterRepository.findOneByOrFail({ id });
+      return await this.parkingRegisterRepository.findOneByOrFail({
+        id,
+        establishment: { id: establishmentId },
+      });
     } catch {
       throw new ParkingRegisterNotFoundException(id);
     }

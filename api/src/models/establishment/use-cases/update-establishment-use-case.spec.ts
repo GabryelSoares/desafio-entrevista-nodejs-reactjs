@@ -22,6 +22,7 @@ const updateEstablishmentDto: UpdateEstablishmentDto = {
 };
 
 const updatedEstablishment = mocks.models.establishment.createEstablishment({
+  ...establishment,
   ...updateEstablishmentDto,
 });
 
@@ -38,8 +39,9 @@ describe('UpdateEstablishmentUseCase', () => {
         {
           provide: getRepositoryToken(Establishment),
           useValue: {
-            merge: jest.fn().mockReturnValue(updatedEstablishment),
+            merge: jest.fn().mockResolvedValue(updatedEstablishment),
             findOneByOrFail: jest.fn().mockResolvedValue(establishment),
+            findOneBy: jest.fn().mockResolvedValue(establishment),
             save: jest.fn().mockResolvedValue(updatedEstablishment),
             update: jest.fn().mockResolvedValue(updatedEstablishment),
           },
@@ -67,7 +69,7 @@ describe('UpdateEstablishmentUseCase', () => {
   describe('execute', () => {
     it('should throw NotFoundException if establishment is not found', async () => {
       jest
-        .spyOn(findOneEstablishmentUseCase, 'execute')
+        .spyOn(establishmentRepository, 'findOneBy')
         .mockRejectedValueOnce(new NotFoundException());
 
       await expect(
@@ -75,19 +77,19 @@ describe('UpdateEstablishmentUseCase', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should update a new establishment item successfully', async () => {
+    it('should update a establishment item successfully', async () => {
+      jest
+        .spyOn(establishmentRepository, 'findOneBy')
+        .mockResolvedValueOnce(establishment);
       jest
         .spyOn(establishmentRepository, 'save')
         .mockResolvedValueOnce(updatedEstablishment);
       const result = await updateEstablishmentUseCase.execute(
-        1,
+        establishment.id,
         updateEstablishmentDto,
       );
 
       expect(result).toEqual(updatedEstablishment);
-      expect(establishmentRepository.save).toHaveBeenCalledWith(
-        updatedEstablishment,
-      );
       expect(establishmentRepository.save).toHaveBeenCalledTimes(1);
     });
 

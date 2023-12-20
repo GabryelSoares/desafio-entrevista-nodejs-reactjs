@@ -8,6 +8,8 @@ import { ExitRegisterUseCase } from './exit-register-use-case';
 import mocks from 'src/helpers/mocks';
 import { EntryRegisterNotFoundException } from 'src/helpers/exceptions/EntryRegisterNotFoundException';
 import mockdate from 'mockdate';
+import { Establishment } from 'src/models/establishment/entities/establishment.entity';
+import { FindOneEstablishmentUseCase } from 'src/models/establishment/use-cases/find-one-establishment-use-case';
 
 const vehicle = mocks.models.vehicle.createVehicle();
 const establishment = mocks.models.establishment.createEstablishment();
@@ -17,7 +19,6 @@ const parkingRegister = mocks.models.parkingRegister.createParkingRegister({
 
 const exitRegisterDto: ExitRegisterDto = {
   vehiclePlate: vehicle.plate,
-  establishmentId: establishment.id,
 };
 const updatedParkingRegister = new ParkingRegister({
   ...parkingRegister,
@@ -34,10 +35,17 @@ describe('ExitRegisterUseCase', () => {
       providers: [
         ExitRegisterUseCase,
         FindOneParkingRegisterUseCase,
+        FindOneEstablishmentUseCase,
+        {
+          provide: getRepositoryToken(Establishment),
+          useValue: {
+            findOneByOrFail: jest.fn().mockResolvedValue(establishment),
+          },
+        },
         {
           provide: getRepositoryToken(ParkingRegister),
           useValue: {
-            merge: jest.fn().mockReturnValue(updatedParkingRegister),
+            merge: jest.fn().mockResolvedValue(updatedParkingRegister),
             findOneBy: jest.fn().mockResolvedValue(parkingRegister),
             findOneByOrFail: jest.fn().mockResolvedValue(parkingRegister),
             save: jest.fn().mockResolvedValue(updatedParkingRegister),
@@ -76,7 +84,7 @@ describe('ExitRegisterUseCase', () => {
           new EntryRegisterNotFoundException(exitRegisterDto.vehiclePlate),
         );
       await expect(
-        updateParkingRegisterUseCase.execute(exitRegisterDto),
+        updateParkingRegisterUseCase.execute(exitRegisterDto, establishment.id),
       ).rejects.toThrow(
         new EntryRegisterNotFoundException(exitRegisterDto.vehiclePlate)
           .message,
@@ -88,8 +96,10 @@ describe('ExitRegisterUseCase', () => {
       jest
         .spyOn(parkingRegisterRepository, 'save')
         .mockResolvedValueOnce(updatedParkingRegister);
-      const result =
-        await updateParkingRegisterUseCase.execute(exitRegisterDto);
+      const result = await updateParkingRegisterUseCase.execute(
+        exitRegisterDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(updatedParkingRegister);
       expect(parkingRegisterRepository.save).toHaveBeenCalledWith(
@@ -104,7 +114,7 @@ describe('ExitRegisterUseCase', () => {
         .mockRejectedValueOnce(new Error('Error') as never);
 
       expect(
-        updateParkingRegisterUseCase.execute(exitRegisterDto),
+        updateParkingRegisterUseCase.execute(exitRegisterDto, establishment.id),
       ).rejects.toThrow('Error');
     });
   });

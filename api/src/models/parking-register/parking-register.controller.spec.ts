@@ -9,14 +9,17 @@ import { FindOneParkingRegisterUseCase } from './use-cases/find-one-parking-regi
 import { RemoveParkingRegisterUseCase } from './use-cases/remove-parking-register-use-case';
 import { ExitRegisterUseCase } from './use-cases/exit-register-use-case';
 import mocks from 'src/helpers/mocks';
+import { JwtService } from '@nestjs/jwt';
 
 const vehicle = mocks.models.vehicle.createVehicle();
 const establishment = mocks.models.establishment.createEstablishment();
 const entryRegisterDto: EntryRegisterDto = {
   vehiclePlate: vehicle.plate,
-  establishmentId: establishment.id,
+  vehicleType: vehicle.type,
 };
-const parkingRegisterList = mocks.models.parkingRegister.listRegisters();
+const parkingRegisterList = mocks.models.parkingRegister.listRegisters({
+  defaultValues: { establishment },
+});
 
 const entry = new Date();
 const exit = new Date(entry.getTime() + 60 * 60 * 1000);
@@ -25,7 +28,6 @@ const entryRegister = mocks.models.parkingRegister.createParkingRegister({
 });
 const exitRegisterDto: ExitRegisterDto = {
   vehiclePlate: vehicle.plate,
-  establishmentId: establishment.id,
 };
 const exitRegister: ParkingRegister = new ParkingRegister({
   ...entryRegister,
@@ -44,6 +46,7 @@ describe('ParkingRegisterController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ParkingRegisterController],
       providers: [
+        JwtService,
         {
           provide: CreateParkingRegisterUseCase,
           useValue: {
@@ -106,7 +109,9 @@ describe('ParkingRegisterController', () => {
 
   describe('find-all', () => {
     it('should return a parkingRegisters list successfully', async () => {
-      const result = await findAllParkingRegistersUseCase.execute();
+      const result = await findAllParkingRegistersUseCase.execute(
+        establishment.id,
+      );
 
       expect(result).toEqual(parkingRegisterList);
     });
@@ -116,17 +121,25 @@ describe('ParkingRegisterController', () => {
         .spyOn(findAllParkingRegistersUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(findAllParkingRegistersUseCase.execute()).rejects.toThrow('Error');
+      expect(
+        findAllParkingRegistersUseCase.execute(establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('find-one', () => {
     it('should get a parkingRegister successfully', async () => {
-      const result = await findOneParkingRegisterUseCase.execute(1);
+      const result = await findOneParkingRegisterUseCase.execute(
+        1,
+        establishment.id,
+      );
 
       expect(result).toEqual(parkingRegisterList[0]);
       expect(findOneParkingRegisterUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(findOneParkingRegisterUseCase.execute).toHaveBeenCalledWith(1);
+      expect(findOneParkingRegisterUseCase.execute).toHaveBeenCalledWith(
+        1,
+        establishment.id,
+      );
     });
 
     it('should throw an exception', () => {
@@ -134,19 +147,24 @@ describe('ParkingRegisterController', () => {
         .spyOn(findOneParkingRegisterUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(findOneParkingRegisterUseCase.execute(1)).rejects.toThrow('Error');
+      expect(
+        findOneParkingRegisterUseCase.execute(1, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('entry', () => {
     it('should create a new parkingRegister successfully', async () => {
-      const result =
-        await createParkingRegisterUseCase.execute(entryRegisterDto);
+      const result = await createParkingRegisterUseCase.execute(
+        entryRegisterDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(entryRegister);
       expect(createParkingRegisterUseCase.execute).toHaveBeenCalledTimes(1);
       expect(createParkingRegisterUseCase.execute).toHaveBeenCalledWith(
         entryRegisterDto,
+        establishment.id,
       );
     });
 
@@ -156,19 +174,26 @@ describe('ParkingRegisterController', () => {
         .mockRejectedValueOnce(new Error('Error') as never);
 
       expect(
-        createParkingRegisterUseCase.execute(entryRegisterDto),
+        createParkingRegisterUseCase.execute(
+          entryRegisterDto,
+          establishment.id,
+        ),
       ).rejects.toThrow('Error');
     });
   });
 
   describe('exit', () => {
     it('should exit a parkingRegister item successfully', async () => {
-      const result = await exitRegisterUseCase.execute(exitRegisterDto);
+      const result = await exitRegisterUseCase.execute(
+        exitRegisterDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(exitRegister);
       expect(exitRegisterUseCase.execute).toHaveBeenCalledTimes(1);
       expect(exitRegisterUseCase.execute).toHaveBeenCalledWith(
-        entryRegisterDto,
+        exitRegisterDto,
+        establishment.id,
       );
     });
 
@@ -177,19 +202,25 @@ describe('ParkingRegisterController', () => {
         .spyOn(exitRegisterUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(exitRegisterUseCase.execute(exitRegisterDto)).rejects.toThrow(
-        'Error',
-      );
+      expect(
+        exitRegisterUseCase.execute(exitRegisterDto, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('remove', () => {
     it('should remove a parkingRegister item successfully', async () => {
-      const result = await removeParkingRegisterUseCase.execute(1);
+      const result = await removeParkingRegisterUseCase.execute(
+        1,
+        establishment.id,
+      );
 
       expect(result).toBeUndefined();
       expect(removeParkingRegisterUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(removeParkingRegisterUseCase.execute).toHaveBeenCalledWith(1);
+      expect(removeParkingRegisterUseCase.execute).toHaveBeenCalledWith(
+        1,
+        establishment.id,
+      );
     });
 
     it('should throw an exception', () => {
@@ -197,7 +228,9 @@ describe('ParkingRegisterController', () => {
         .spyOn(removeParkingRegisterUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(removeParkingRegisterUseCase.execute(1)).rejects.toThrow('Error');
+      expect(
+        removeParkingRegisterUseCase.execute(1, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 });

@@ -5,7 +5,10 @@ import { Vehicle } from '../entities/vehicle.entity';
 import { FindAllVehiclesUseCase } from './find-all-vehicles-use-case';
 import mocks from 'src/helpers/mocks';
 
-const vehiclesList = mocks.models.vehicle.listVehicles();
+const establishment = mocks.models.establishment.createEstablishment();
+const vehiclesList = mocks.models.vehicle.listVehicles({
+  defaultValues: { establishment },
+});
 
 describe('FindAllVehiclesUseCase', () => {
   let findAllVehiclesUseCase: FindAllVehiclesUseCase;
@@ -39,7 +42,7 @@ describe('FindAllVehiclesUseCase', () => {
 
   describe('execute', () => {
     it('should return a vehicle list successfully', async () => {
-      const result = await findAllVehiclesUseCase.execute();
+      const result = await findAllVehiclesUseCase.execute(establishment.id);
 
       expect(result).toEqual(vehiclesList);
       expect(vehicleRepository.find).toHaveBeenCalledTimes(1);
@@ -50,7 +53,9 @@ describe('FindAllVehiclesUseCase', () => {
         .spyOn(vehicleRepository, 'find')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(findAllVehiclesUseCase.execute()).rejects.toThrow('Error');
+      expect(findAllVehiclesUseCase.execute(establishment.id)).rejects.toThrow(
+        'Error',
+      );
     });
   });
 });

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { ParkingRegister } from 'src/models/parking-register/entities/parking-register.entity';
+import { Vehicle } from 'src/models/vehicle/entities/vehicle.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'establishments' })
@@ -43,6 +44,14 @@ export class Establishment {
   @ApiProperty()
   carSlots: number;
 
+  @Column()
+  @ApiProperty()
+  availableCarSlots: number;
+
+  @Column()
+  @ApiProperty()
+  availableMotorcycleSlots: number;
+
   @OneToMany(
     () => ParkingRegister,
     (parkingRegister) => parkingRegister.establishment,
@@ -50,6 +59,9 @@ export class Establishment {
   )
   @ApiProperty({ type: () => ParkingRegister })
   parkingRegisters: ParkingRegister[];
+
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.establishment)
+  vehicles: Vehicle[];
 
   constructor(partial: Partial<Establishment>) {
     Object.assign(this, partial);

@@ -13,8 +13,15 @@ export class UpdateVehicleUseCase {
     private readonly findOneVehicleUseCase: FindOneVehicleUseCase,
   ) {}
 
-  async execute(id: number, updateVehicleDto: UpdateVehicleDto) {
-    const vehicle = await this.findOneVehicleUseCase.execute(id);
+  async execute(
+    id: number,
+    updateVehicleDto: UpdateVehicleDto,
+    establishmentId: number,
+  ) {
+    const vehicle = await this.findOneVehicleUseCase.execute(
+      id,
+      establishmentId,
+    );
 
     const result = this.vehicleRepository.merge(vehicle, updateVehicleDto);
     return await this.vehicleRepository.save(result);

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EntryRegisterDto } from '../dto/entry-register.dto';
@@ -7,6 +7,9 @@ import { Vehicle } from 'src/models/vehicle/entities/vehicle.entity';
 import { ParkingRegisterAlreadyExistsException } from 'src/helpers/exceptions/ParkingRegisterAlreadyExistsException';
 import { Establishment } from 'src/models/establishment/entities/establishment.entity';
 import { EstablishmentNotFoundException } from 'src/helpers/exceptions/EstablishmentNotFoundException';
+import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
+import { NoAvailableParkingSpaceException } from 'src/helpers/exceptions/NoAvailableParkingSpaceException';
+import { VehicleNotFoundException } from 'src/helpers/exceptions/VehicleNotFoundException';
 
 @Injectable()
 export class CreateParkingRegisterUseCase {
@@ -19,24 +22,40 @@ export class CreateParkingRegisterUseCase {
     private readonly establishmentRepository: Repository<Establishment>,
   ) {}
 
-  async execute(entryRegisterDto: EntryRegisterDto) {
-    const existingVehicle = await this.vehicleRepository.findOneByOrFail({
+  async execute(entryRegisterDto: EntryRegisterDto, establishmentId: number) {
+    const existingVehicle = await this.vehicleRepository.findOneBy({
       plate: entryRegisterDto.vehiclePlate,
+      establishment: {
+        id: establishmentId,
+      },
     });
 
     if (!existingVehicle) {
-      throw new NotFoundException('Vehicle not found.');
+      throw new VehicleNotFoundException(entryRegisterDto.vehiclePlate);
     }
 
-    const existingEstablishment =
-      await this.establishmentRepository.findOneByOrFail({
-        id: entryRegisterDto.establishmentId,
-      });
+    const establishment = await this.establishmentRepository.findOneByOrFail({
+      id: establishmentId,
+    });
 
-    if (!existingEstablishment) {
-      throw new EstablishmentNotFoundException(
-        entryRegisterDto.establishmentId,
-      );
+    if (!establishment) {
+      throw new EstablishmentNotFoundException(establishmentId);
+    }
+
+    if (
+      (entryRegisterDto.vehicleType === VehicleTypeEnum.CAR &&
+        establishment.availableCarSlots <= 0) ||
+      (entryRegisterDto.vehicleType === VehicleTypeEnum.MOTORCYCLE &&
+        establishment.availableMotorcycleSlots <= 0)
+    ) {
+      throw new NoAvailableParkingSpaceException();
+    }
+
+    if (entryRegisterDto.vehicleType === VehicleTypeEnum.CAR) {
+      establishment.availableCarSlots -= 1;
+    }
+    if (entryRegisterDto.vehicleType === VehicleTypeEnum.MOTORCYCLE) {
+      establishment.availableMotorcycleSlots -= 1;
     }
 
     const existingParking = await this.parkingRegisterRepository.findOneBy({
@@ -44,7 +63,7 @@ export class CreateParkingRegisterUseCase {
         plate: entryRegisterDto.vehiclePlate,
       },
       establishment: {
-        id: entryRegisterDto.establishmentId,
+        id: establishmentId,
       },
       exit: null,
     });
@@ -58,7 +77,7 @@ export class CreateParkingRegisterUseCase {
     return await this.parkingRegisterRepository.save(
       this.parkingRegisterRepository.create({
         vehicle: existingVehicle,
-        establishment: existingEstablishment,
+        establishment,
         entry: new Date(),
       }),
     );

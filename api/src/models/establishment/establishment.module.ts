@@ -16,6 +16,7 @@ import { FindEstablishmentByEmailUseCase } from './use-cases/find-establishment-
     TypeOrmModule.forFeature([Establishment]),
     CreateEstablishmentUseCase,
     FindEstablishmentByEmailUseCase,
+    FindOneEstablishmentUseCase,
   ],
   providers: [
     CreateEstablishmentUseCase,

@@ -9,7 +9,10 @@ export class FindAllVehiclesUseCase {
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
-  async execute() {
-    return await this.vehicleRepository.find({ order: { createdAt: 'DESC' } });
+  async execute(establishmentId: number) {
+    return await this.vehicleRepository.find({
+      order: { createdAt: 'DESC' },
+      where: { establishment: { id: establishmentId } },
+    });
   }
 }

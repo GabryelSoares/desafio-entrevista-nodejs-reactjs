@@ -8,6 +8,7 @@ import {
   Delete,
   Inject,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -58,8 +59,11 @@ export class VehicleController {
     description: 'Invalid params',
     type: BadRequestSwagger,
   })
-  create(@Body() createVehicleDto: CreateVehicleDto) {
-    return this.createVehicleUseCase.execute(createVehicleDto);
+  create(@Body() createVehicleDto: CreateVehicleDto, @Req() req: any) {
+    return this.createVehicleUseCase.execute(
+      createVehicleDto,
+      req.establishmentId,
+    );
   }
 
   @Get()
@@ -75,8 +79,8 @@ export class VehicleController {
     description: 'Vehicle not found',
     type: NotFoundSwagger,
   })
-  findAll() {
-    return this.findAllVehiclesUseCase.execute();
+  findAll(@Req() req: any) {
+    return this.findAllVehiclesUseCase.execute(req.establishmentId);
   }
 
   @Get(':id')
@@ -91,8 +95,8 @@ export class VehicleController {
     description: 'Vehicle not found',
     type: NotFoundSwagger,
   })
-  findOne(@Param('id') id: string) {
-    return this.findOneVehiclesUseCase.execute(+id);
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.findOneVehiclesUseCase.execute(+id, req.establishmentId);
   }
 
   @Patch(':id')
@@ -112,8 +116,16 @@ export class VehicleController {
     description: 'Vehicle not found',
     type: NotFoundSwagger,
   })
-  update(@Param('id') id: string, @Body() updateVehicleDto: UpdateVehicleDto) {
-    return this.updateVehicleUseCase.execute(+id, updateVehicleDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateVehicleDto: UpdateVehicleDto,
+    @Req() req: any,
+  ) {
+    return this.updateVehicleUseCase.execute(
+      +id,
+      updateVehicleDto,
+      req.establishmentId,
+    );
   }
 
   @Delete(':id')
@@ -127,7 +139,7 @@ export class VehicleController {
     description: 'Vehicle not found',
     type: NotFoundSwagger,
   })
-  remove(@Param('id') id: string) {
-    return this.removeVehicleUseCase.execute(+id);
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.removeVehicleUseCase.execute(+id, req.establishmentId);
   }
 }

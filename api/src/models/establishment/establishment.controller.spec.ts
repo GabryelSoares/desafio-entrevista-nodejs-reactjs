@@ -8,6 +8,7 @@ import { FindOneEstablishmentUseCase } from './use-cases/find-one-establishment-
 import { RemoveEstablishmentUseCase } from './use-cases/remove-establishment-use-case';
 import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
 import mocks from 'src/helpers/mocks';
+import { JwtService } from '@nestjs/jwt';
 
 const establishmentList = mocks.models.establishment.listEstablishments();
 
@@ -51,6 +52,7 @@ describe('EstablishmentController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EstablishmentController],
       providers: [
+        JwtService,
         {
           provide: CreateEstablishmentUseCase,
           useValue: {

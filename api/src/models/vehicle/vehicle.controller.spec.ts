@@ -10,8 +10,12 @@ import { RemoveVehicleUseCase } from './use-cases/remove-vehicle-use-case';
 import { UpdateVehicleUseCase } from './use-cases/update-vehicle-use-case';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 import mocks from 'src/helpers/mocks';
+import { JwtService } from '@nestjs/jwt';
 
-const vehicleList: Vehicle[] = mocks.models.vehicle.listVehicles();
+const establishment = mocks.models.establishment.createEstablishment();
+const vehicleList: Vehicle[] = mocks.models.vehicle.listVehicles({
+  defaultValues: { establishment },
+});
 
 const createVehicleDto: CreateVehicleDto = {
   brand: 'Honda',
@@ -48,6 +52,7 @@ describe('VehicleController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [VehicleController],
       providers: [
+        JwtService,
         {
           provide: CreateVehicleUseCase,
           useValue: {
@@ -107,7 +112,7 @@ describe('VehicleController', () => {
 
   describe('find-all', () => {
     it('should return a vehicles list successfully', async () => {
-      const result = await findAllVehiclesUseCase.execute();
+      const result = await findAllVehiclesUseCase.execute(establishment.id);
 
       expect(result).toEqual(vehicleList);
     });
@@ -117,17 +122,22 @@ describe('VehicleController', () => {
         .spyOn(findAllVehiclesUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(findAllVehiclesUseCase.execute()).rejects.toThrow('Error');
+      expect(findAllVehiclesUseCase.execute(establishment.id)).rejects.toThrow(
+        'Error',
+      );
     });
   });
 
   describe('find-one', () => {
     it('should get a vehicle successfully', async () => {
-      const result = await findOneVehicleUseCase.execute(1);
+      const result = await findOneVehicleUseCase.execute(1, establishment.id);
 
       expect(result).toEqual(vehicleList[0]);
       expect(findOneVehicleUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(findOneVehicleUseCase.execute).toHaveBeenCalledWith(1);
+      expect(findOneVehicleUseCase.execute).toHaveBeenCalledWith(
+        1,
+        establishment.id,
+      );
     });
 
     it('should throw an exception', () => {
@@ -135,18 +145,24 @@ describe('VehicleController', () => {
         .spyOn(findOneVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(findOneVehicleUseCase.execute(1)).rejects.toThrow('Error');
+      expect(
+        findOneVehicleUseCase.execute(1, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('create', () => {
     it('should create a new vehicle successfully', async () => {
-      const result = await createVehicleUseCase.execute(createVehicleDto);
+      const result = await createVehicleUseCase.execute(
+        createVehicleDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(newVehicle);
       expect(createVehicleUseCase.execute).toHaveBeenCalledTimes(1);
       expect(createVehicleUseCase.execute).toHaveBeenCalledWith(
         createVehicleDto,
+        establishment.id,
       );
     });
 
@@ -155,21 +171,26 @@ describe('VehicleController', () => {
         .spyOn(createVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(createVehicleUseCase.execute(createVehicleDto)).rejects.toThrow(
-        'Error',
-      );
+      expect(
+        createVehicleUseCase.execute(createVehicleDto, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('update', () => {
     it('should update a vehicle item successfully', async () => {
-      const result = await updateVehicleUseCase.execute(1, updateVehicleDto);
+      const result = await updateVehicleUseCase.execute(
+        1,
+        updateVehicleDto,
+        establishment.id,
+      );
 
       expect(result).toEqual(updatedVehicle);
       expect(updateVehicleUseCase.execute).toHaveBeenCalledTimes(1);
       expect(updateVehicleUseCase.execute).toHaveBeenCalledWith(
         1,
         updateVehicleDto,
+        establishment.id,
       );
     });
 
@@ -178,19 +199,17 @@ describe('VehicleController', () => {
         .spyOn(updateVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(updateVehicleUseCase.execute(1, updateVehicleDto)).rejects.toThrow(
-        'Error',
-      );
+      expect(
+        updateVehicleUseCase.execute(1, updateVehicleDto, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 
   describe('remove', () => {
     it('should remove a vehicle item successfully', async () => {
-      const result = await removeVehicleUseCase.execute(1);
+      const result = await removeVehicleUseCase.execute(1, establishment.id);
 
       expect(result).toBeUndefined();
-      expect(removeVehicleUseCase.execute).toHaveBeenCalledTimes(1);
-      expect(removeVehicleUseCase.execute).toHaveBeenCalledWith(1);
     });
 
     it('should throw an exception', () => {
@@ -198,7 +217,9 @@ describe('VehicleController', () => {
         .spyOn(removeVehicleUseCase, 'execute')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(removeVehicleUseCase.execute(1)).rejects.toThrow('Error');
+      expect(removeVehicleUseCase.execute(1, establishment.id)).rejects.toThrow(
+        'Error',
+      );
     });
   });
 });

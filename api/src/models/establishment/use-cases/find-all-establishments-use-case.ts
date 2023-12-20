@@ -10,6 +10,21 @@ export class FindAllEstablishmentsUseCase {
     private readonly establishmentRepository: Repository<Establishment>,
   ) {}
   async execute() {
-    return await this.establishmentRepository.find({ order: { name: 'ASC' } });
+    return await this.establishmentRepository.find({
+      order: { name: 'ASC' },
+      relations: [],
+      select: [
+        'id',
+        'name',
+        'cnpj',
+        'email',
+        'address',
+        'phone',
+        'carSlots',
+        'motorcycleSlots',
+        'availableCarSlots',
+        'availableMotorcycleSlots',
+      ],
+    });
   }
 }

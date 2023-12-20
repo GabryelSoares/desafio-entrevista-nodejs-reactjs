@@ -8,6 +8,7 @@ import {
   Delete,
   Inject,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -58,8 +59,11 @@ export class ParkingRegisterController {
     description: 'Invalid params',
     type: BadRequestSwagger,
   })
-  create(@Body() createParkingRegisterDto: EntryRegisterDto) {
-    return this.createParkingRegisterUseCase.execute(createParkingRegisterDto);
+  create(@Body() createParkingRegisterDto: EntryRegisterDto, @Req() req: any) {
+    return this.createParkingRegisterUseCase.execute(
+      createParkingRegisterDto,
+      req.establishmentId,
+    );
   }
 
   @Get()
@@ -75,8 +79,8 @@ export class ParkingRegisterController {
     description: 'ParkingRegister not found',
     type: NotFoundSwagger,
   })
-  findAll() {
-    return this.findAllParkingRegistersUseCase.execute();
+  findAll(@Req() req: any) {
+    return this.findAllParkingRegistersUseCase.execute(req.establishmentId);
   }
 
   @Get(':id')
@@ -91,8 +95,11 @@ export class ParkingRegisterController {
     description: 'ParkingRegister not found',
     type: NotFoundSwagger,
   })
-  findOne(@Param('id') id: string) {
-    return this.findOneParkingRegistersUseCase.execute(+id);
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.findOneParkingRegistersUseCase.execute(
+      +id,
+      req.establishmentId,
+    );
   }
 
   @Patch()
@@ -112,8 +119,11 @@ export class ParkingRegisterController {
     description: 'ParkingRegister not found',
     type: NotFoundSwagger,
   })
-  update(@Body() exitParkingRegisterDto: ExitRegisterDto) {
-    return this.updateParkingRegisterUseCase.execute(exitParkingRegisterDto);
+  update(@Body() exitParkingRegisterDto: ExitRegisterDto, @Req() req: any) {
+    return this.updateParkingRegisterUseCase.execute(
+      exitParkingRegisterDto,
+      req.establishmentId,
+    );
   }
 
   @Delete(':id')
@@ -127,7 +137,7 @@ export class ParkingRegisterController {
     description: 'ParkingRegister not found',
     type: NotFoundSwagger,
   })
-  remove(@Param('id') id: string) {
-    return this.removeParkingRegisterUseCase.execute(+id);
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.removeParkingRegisterUseCase.execute(+id, req.establishmentId);
   }
 }

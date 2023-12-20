@@ -23,7 +23,11 @@ export class CreateEstablishmentUseCase {
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = await this.establishmentRepository.save(
-      this.establishmentRepository.create(createEstablishmentDto),
+      this.establishmentRepository.create({
+        ...createEstablishmentDto,
+        availableCarSlots: createEstablishmentDto.carSlots,
+        availableMotorcycleSlots: createEstablishmentDto.motorcycleSlots,
+      }),
     );
     return result;
   }

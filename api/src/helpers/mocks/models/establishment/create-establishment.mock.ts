@@ -11,5 +11,7 @@ export const createEstablishment = (data?: Partial<Establishment>) =>
     phone: `99 99999-0000`,
     motorcycleSlots: 10,
     carSlots: 10,
+    availableCarSlots: 10,
+    availableMotorcycleSlots: 10,
     ...data,
   });

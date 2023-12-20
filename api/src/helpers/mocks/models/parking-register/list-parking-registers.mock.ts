@@ -1,7 +1,13 @@
 import { ParkingRegister } from 'src/models/parking-register/entities/parking-register.entity';
 import mocks from 'src/helpers/mocks';
 
-export const listRegisters = (quantity = 4) => {
+export const listRegisters = ({
+  quantity = 4,
+  defaultValues,
+}: {
+  quantity?: number;
+  defaultValues?: Partial<ParkingRegister>;
+}) => {
   return new Array(quantity).fill(null).map((_, index) => {
     const entryTime = new Date();
     const exitTime =
@@ -13,6 +19,7 @@ export const listRegisters = (quantity = 4) => {
       exit: exitTime,
       vehicle: mocks.models.vehicle.createVehicle(),
       establishment: mocks.models.establishment.createEstablishment(),
+      ...defaultValues,
     });
   });
 };

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 
 export class EntryRegisterDto {
   @IsString()
@@ -12,8 +13,7 @@ export class EntryRegisterDto {
   @ApiProperty()
   vehiclePlate: string;
 
-  @ApiProperty()
-  @IsNumber()
-  @IsNotEmpty()
-  establishmentId: number;
+  @IsEnum(VehicleTypeEnum)
+  @ApiProperty({ enum: VehicleTypeEnum })
+  vehicleType: VehicleTypeEnum;
 }

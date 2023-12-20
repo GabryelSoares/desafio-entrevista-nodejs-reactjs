@@ -40,7 +40,10 @@ describe('FindOneParkingRegisterUseCase', () => {
 
   describe('execute', () => {
     it('should return a parkingRegister item successfully', async () => {
-      const result = await findOneParkingRegisterUseCase.execute(1);
+      const result = await findOneParkingRegisterUseCase.execute(
+        1,
+        parkingRegister.establishment.id,
+      );
 
       expect(result).toEqual(parkingRegister);
       expect(parkingRegisterRepository.findOneByOrFail).toHaveBeenCalledTimes(
@@ -53,9 +56,12 @@ describe('FindOneParkingRegisterUseCase', () => {
         .spyOn(parkingRegisterRepository, 'findOneByOrFail')
         .mockRejectedValueOnce(new ParkingRegisterNotFoundException(1));
 
-      expect(findOneParkingRegisterUseCase.execute(1)).rejects.toThrow(
-        ParkingRegisterNotFoundException,
-      );
+      expect(
+        findOneParkingRegisterUseCase.execute(
+          1,
+          parkingRegister.establishment.id,
+        ),
+      ).rejects.toThrow(ParkingRegisterNotFoundException);
     });
   });
 });

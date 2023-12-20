@@ -7,9 +7,10 @@ import { FindOneVehicleUseCase } from './use-cases/find-one-vehicle-use-case';
 import { RemoveVehicleUseCase } from './use-cases/remove-vehicle-use-case';
 import { UpdateVehicleUseCase } from './use-cases/update-vehicle-use-case';
 import { Vehicle } from './entities/vehicle.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vehicle])],
+  imports: [AuthModule, TypeOrmModule.forFeature([Vehicle])],
   controllers: [VehicleController],
   exports: [TypeOrmModule.forFeature([Vehicle])],
   providers: [

@@ -9,7 +9,8 @@ import { UpdateVehicleUseCase } from './update-vehicle-use-case';
 import { VehicleTypeEnum } from 'src/helpers/enums/vehicle.enum';
 import mocks from 'src/helpers/mocks';
 
-const vehicle = mocks.models.vehicle.createVehicle();
+const establishment = mocks.models.establishment.createEstablishment();
+const vehicle = mocks.models.vehicle.createVehicle({ establishment });
 
 const updateVehicleDto: UpdateVehicleDto = {
   brand: 'Honda',
@@ -18,7 +19,10 @@ const updateVehicleDto: UpdateVehicleDto = {
   plate: 'DDD-0A00',
   type: VehicleTypeEnum.MOTORCYCLE,
 };
-const updatedVehicle = mocks.models.vehicle.createVehicle(updateVehicleDto);
+const updatedVehicle = mocks.models.vehicle.createVehicle({
+  ...updateVehicleDto,
+  establishment,
+});
 
 describe('UpdateVehicleUseCase', () => {
   let updateVehicleUseCase: UpdateVehicleUseCase;
@@ -33,7 +37,7 @@ describe('UpdateVehicleUseCase', () => {
         {
           provide: getRepositoryToken(Vehicle),
           useValue: {
-            merge: jest.fn().mockReturnValue(updatedVehicle),
+            merge: jest.fn().mockResolvedValue(updatedVehicle),
             findOneByOrFail: jest.fn().mockResolvedValue(vehicle),
             save: jest.fn().mockResolvedValue(updatedVehicle),
             update: jest.fn().mockResolvedValue(updatedVehicle),
@@ -65,7 +69,7 @@ describe('UpdateVehicleUseCase', () => {
         .mockRejectedValueOnce(new NotFoundException());
 
       await expect(
-        updateVehicleUseCase.execute(1, updateVehicleDto),
+        updateVehicleUseCase.execute(1, updateVehicleDto, establishment.id),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -73,11 +77,18 @@ describe('UpdateVehicleUseCase', () => {
       jest
         .spyOn(vehicleRepository, 'save')
         .mockResolvedValueOnce(updatedVehicle);
-      const result = await updateVehicleUseCase.execute(1, updateVehicleDto);
-
+      const result = await updateVehicleUseCase.execute(
+        vehicle.id,
+        updateVehicleDto,
+        establishment.id,
+      );
       expect(result).toEqual(updatedVehicle);
-      expect(vehicleRepository.save).toHaveBeenCalledWith(updatedVehicle);
-      expect(vehicleRepository.save).toHaveBeenCalledTimes(1);
+
+      expect(vehicleRepository.merge).toHaveBeenCalledWith(
+        vehicle,
+        updateVehicleDto,
+      );
+      expect(vehicleRepository.merge).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an exception', () => {
@@ -85,9 +96,9 @@ describe('UpdateVehicleUseCase', () => {
         .spyOn(vehicleRepository, 'save')
         .mockRejectedValueOnce(new Error('Error') as never);
 
-      expect(updateVehicleUseCase.execute(1, updateVehicleDto)).rejects.toThrow(
-        'Error',
-      );
+      expect(
+        updateVehicleUseCase.execute(1, updateVehicleDto, establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 });

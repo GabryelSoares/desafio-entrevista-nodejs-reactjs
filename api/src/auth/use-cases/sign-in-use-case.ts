@@ -38,7 +38,7 @@ export class SignInUseCase {
     return {
       establishment,
       accessToken: await this.jwtService.signAsync({
-        username: establishment.email,
+        establishmentId: establishment.id,
         sub: establishment.id,
       }),
     };

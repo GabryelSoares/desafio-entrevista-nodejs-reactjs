@@ -5,7 +5,10 @@ import { ParkingRegister } from '../entities/parking-register.entity';
 import { FindAllParkingRegistersUseCase } from './find-all-parking-registers-use-case';
 import mocks from 'src/helpers/mocks';
 
-const parkingRegistersList = mocks.models.parkingRegister.listRegisters();
+const establishment = mocks.models.establishment.createEstablishment();
+const parkingRegistersList = mocks.models.parkingRegister.listRegisters({
+  defaultValues: { establishment },
+});
 
 describe('FindAllParkingRegistersUseCase', () => {
   let findAllParkingRegistersUseCase: FindAllParkingRegistersUseCase;
@@ -39,7 +42,9 @@ describe('FindAllParkingRegistersUseCase', () => {
 
   describe('execute', () => {
     it('should return a parkingRegister list successfully', async () => {
-      const result = await findAllParkingRegistersUseCase.execute();
+      const result = await findAllParkingRegistersUseCase.execute(
+        establishment.id,
+      );
 
       expect(result).toEqual(parkingRegistersList);
       expect(parkingRegisterRepository.find).toHaveBeenCalledTimes(1);
@@ -50,7 +55,9 @@ describe('FindAllParkingRegistersUseCase', () => {
         .spyOn(parkingRegisterRepository, 'find')
         .mockRejectedValueOnce(new Error('Error'));
 
-      expect(findAllParkingRegistersUseCase.execute()).rejects.toThrow('Error');
+      expect(
+        findAllParkingRegistersUseCase.execute(establishment.id),
+      ).rejects.toThrow('Error');
     });
   });
 });
