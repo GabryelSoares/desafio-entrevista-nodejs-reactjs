@@ -29,8 +29,6 @@ export class ExitRegisterUseCase {
       );
     }
 
-    console.log('existingEntry:: ', existingEntry);
-
     existingEntry.exit = new Date();
     return await this.parkingRegisterRepository.save(existingEntry);
   }

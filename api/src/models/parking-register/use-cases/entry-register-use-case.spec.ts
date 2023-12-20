@@ -72,7 +72,6 @@ describe('CreateParkingRegisterUseCase', () => {
   });
 
   afterEach(() => {
-    // Após cada teste, redefina a data atual para o valor real
     mockdate.reset();
   });
 
