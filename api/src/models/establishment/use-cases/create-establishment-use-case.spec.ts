@@ -10,8 +10,9 @@ import mocks from 'src/helpers/mocks';
 const createEstablishmentDto: CreateEstablishmentDto = {
   name: 'SeaPark',
   cnpj: '00.000.000/0000-00',
+  email: '1test@gmail.com',
   password: 'senha',
-  address: 'test@gmail.com',
+  address: 'avenida teste, 123',
   phone: '99 99999-9999',
   motorcycleSlots: 10,
   carSlots: 10,
@@ -73,8 +74,9 @@ describe('CreateEstablishmentUseCase', () => {
       const result = await createEstablishmentUseCase.execute(
         createEstablishmentDto,
       );
-
-      expect(result).toEqual(establishment);
+      const establishmentWithoutPassord = { ...establishment };
+      delete establishmentWithoutPassord.password;
+      expect(result).toEqual(establishmentWithoutPassord);
       expect(establishmentRepository.create).toHaveBeenCalledWith(
         createEstablishmentDto,
       );

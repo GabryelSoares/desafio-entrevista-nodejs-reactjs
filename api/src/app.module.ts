@@ -5,6 +5,7 @@ import { EstablishmentModule } from './models/establishment/establishment.module
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VehicleModule } from './models/vehicle/vehicle.module';
 import { ParkingRegisterModule } from './models/parking-register/parking-register.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ParkingRegisterModule } from './models/parking-register/parking-registe
     }),
     VehicleModule,
     ParkingRegisterModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

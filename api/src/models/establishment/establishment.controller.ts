@@ -1,33 +1,30 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   Inject,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
 import { NotFoundSwagger } from '../../helpers/swagger/not-found-request.swagger';
-import { CreateEstablishmentDto } from './dto/create-establishment.dto';
 import { UpdateEstablishmentDto } from './dto/update-establishment.dto';
-import { CreateEstablishmentSwagger } from './swagger/create-establishment.swagger';
 import { FindAllEstablishmentSwagger } from './swagger/find-all-establishment.swagger';
 import { FindOneEstablishmentSwagger } from './swagger/find-one-establishment.swagger';
 import { UpdateEstablishmentSwagger } from './swagger/update-establishment.swagger';
-import { CreateEstablishmentUseCase } from './use-cases/create-establishment-use-case';
 import { FindAllEstablishmentsUseCase } from './use-cases/find-all-establishments-use-case';
 import { FindOneEstablishmentUseCase } from './use-cases/find-one-establishment-use-case';
 import { RemoveEstablishmentUseCase } from './use-cases/remove-establishment-use-case';
 import { UpdateEstablishmentUseCase } from './use-cases/update-establishment-use-case';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('establishments')
 @ApiTags('establishments')
 export class EstablishmentController {
-  @Inject(CreateEstablishmentUseCase)
-  private readonly createEstablishmentUseCase: CreateEstablishmentUseCase;
   @Inject(FindAllEstablishmentsUseCase)
   private readonly findAllEstablishmentsUseCase: FindAllEstablishmentsUseCase;
   @Inject(FindOneEstablishmentUseCase)
@@ -36,22 +33,6 @@ export class EstablishmentController {
   private readonly removeEstablishmentUseCase: RemoveEstablishmentUseCase;
   @Inject(UpdateEstablishmentUseCase)
   private readonly updateEstablishmentUseCase: UpdateEstablishmentUseCase;
-
-  @Post()
-  @ApiOperation({ summary: 'Create establishment' })
-  @ApiResponse({
-    status: 201,
-    description: 'New establishment successfully created',
-    type: CreateEstablishmentSwagger,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid params',
-    type: BadRequestSwagger,
-  })
-  create(@Body() createEstablishmentDto: CreateEstablishmentDto) {
-    return this.createEstablishmentUseCase.execute(createEstablishmentDto);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Find all establishments' })

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Inject,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
@@ -22,7 +23,9 @@ import { FindAllParkingRegistersUseCase } from './use-cases/find-all-parking-reg
 import { FindOneParkingRegisterUseCase } from './use-cases/find-one-parking-register-use-case';
 import { RemoveParkingRegisterUseCase } from './use-cases/remove-parking-register-use-case';
 import { ExitRegisterUseCase } from './use-cases/exit-register-use-case';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('parkingRegisters')
 @ApiTags('parkingRegisters')
 export class ParkingRegisterController {

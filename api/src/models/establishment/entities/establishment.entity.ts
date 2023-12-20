@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import { ParkingRegister } from 'src/models/parking-register/entities/parking-register.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
@@ -15,6 +16,12 @@ export class Establishment {
   @Column()
   @ApiProperty()
   cnpj: string;
+
+  @Column({ unique: true })
+  @IsEmail({}, { message: 'Invalid email format' })
+  @IsNotEmpty({ message: 'Email should not be empty' })
+  @ApiProperty()
+  email: string;
 
   @Column()
   @ApiProperty()

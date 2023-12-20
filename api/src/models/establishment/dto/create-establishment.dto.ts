@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -18,6 +19,12 @@ export class CreateEstablishmentDto {
   @IsNotEmpty()
   @ApiProperty()
   cnpj: string;
+
+  @IsString()
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty()
+  email: string;
 
   @IsString()
   @IsNotEmpty()

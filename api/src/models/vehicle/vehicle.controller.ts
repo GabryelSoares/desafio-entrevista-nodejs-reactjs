@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Inject,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestSwagger } from '../../helpers/swagger/bad-request.swagger';
@@ -22,7 +23,9 @@ import { FindAllVehiclesUseCase } from './use-cases/find-all-vehicles-use-case';
 import { FindOneVehicleUseCase } from './use-cases/find-one-vehicle-use-case';
 import { RemoveVehicleUseCase } from './use-cases/remove-vehicle-use-case';
 import { UpdateVehicleUseCase } from './use-cases/update-vehicle-use-case';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('vehicles')
 @ApiTags('vehicles')
 export class VehicleController {

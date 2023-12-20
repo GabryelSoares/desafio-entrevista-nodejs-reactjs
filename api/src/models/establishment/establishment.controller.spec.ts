@@ -14,6 +14,7 @@ const establishmentList = mocks.models.establishment.listEstablishments();
 const createEstablishmentDto: CreateEstablishmentDto = {
   name: 'SeaPark',
   cnpj: '00.000.000/0000-00',
+  email: 'test@gmail.com',
   password: 'senha',
   address: 'test@gmail.com',
   phone: '99 99999-9999',
@@ -27,6 +28,7 @@ const newEstablishment = mocks.models.establishment.createEstablishment(
 const updateEstablishmentDto: UpdateEstablishmentDto = {
   name: 'Beach Parking',
   cnpj: '00.000.000/0000-00',
+  email: 'test@gmail.com',
   password: 'senha',
   address: 'test@gmail.com',
   phone: '99 99999-9999',

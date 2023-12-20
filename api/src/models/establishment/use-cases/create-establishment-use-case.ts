@@ -21,8 +21,10 @@ export class CreateEstablishmentUseCase {
         createEstablishmentDto.cnpj,
       );
     }
-    return await this.establishmentRepository.save(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = await this.establishmentRepository.save(
       this.establishmentRepository.create(createEstablishmentDto),
     );
+    return result;
   }
 }
