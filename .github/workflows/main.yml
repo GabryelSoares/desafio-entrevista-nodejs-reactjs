@@ -1,35 +1,54 @@
-name: NodeJS Github Action
+name: Deploy
 
-on: push
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: npm install & start
-        run: |
-          npm install
-          npm start
-        # env:
-        #   CI: true
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - uses: akhileshns/heroku-deploy@v3.12.14 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: 'parking-app'
+          heroku_app_name: "parking-app" #Must be unique in Heroku
           heroku_email: ${{secrets.HEROKU_EMAIL}}
+          usedocker: true
+          
+# name: NodeJS Github Action
+
+# on: push
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     strategy:
+#       matrix:
+#         node-version: [20.x]
+
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#       - name: npm install & start
+#         run: |
+#           npm install
+#           npm start
+#         # env:
+#         #   CI: true
+
+#   deploy:
+#     runs-on: ubuntu-latest
+#     needs: [build]
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: akhileshns/heroku-deploy@v3.12.12
+#         with:
+#           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+#           heroku_app_name: 'parking-app'
+#           heroku_email: ${{secrets.HEROKU_EMAIL}}
