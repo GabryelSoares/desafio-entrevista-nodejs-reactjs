@@ -12,6 +12,7 @@ async function bootstrap() {
     methods: 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,UPDATE',
     preflightContinue: false,
     optionsSuccessStatus: 200,
+    credentials: true,
     allowedHeaders:
       'Access-Control-Allow-Origin,Origin,X-Requested-With,Content-Type,Accept,Authorization,authorization,X-Forwarded-for',
   });
