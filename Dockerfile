@@ -2,10 +2,13 @@ FROM node:20
 
 WORKDIR /app
 
-COPY . .
-CMD ["npm", "install", "glob", "rimraf"]
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm install
 
 COPY . .
-RUN npm run start
 
 EXPOSE 3000
+
+CMD ["npm", "run", "start"]
