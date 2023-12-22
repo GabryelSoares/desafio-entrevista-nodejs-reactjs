@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { ParkingRegisterController } from './models/parking-register/parking-register.controller';
 import { VehicleController } from './models/vehicle/vehicle.controller';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { VehicleController } from './models/vehicle/vehicle.controller';
     VehicleModule,
     ParkingRegisterModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {

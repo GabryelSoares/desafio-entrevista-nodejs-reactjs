@@ -13,15 +13,31 @@ services:
     ports:
       - 3306:3306
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile-api
-    ports:
-      - 3000:3000
-    volumes:
-      - ./api/src:/app/src
-      - ./api/package.json:/app/package.json
-      - ./api/.env:/app/.env
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-api
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./api/src:/app/src
+  #     - ./api/package.json:/app/package.json
+  #     - ./api/.env:/app/.env
+  #   depends_on:
+  #     - mysql
+
+  # front:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-front
+  #   ports:
+  #     - 3006:3006
+  #   volumes:
+  #     - ./front/src:/front/src
+  #     - ./front/package.json:/front/package.json
+  #     - ./front/.env:/front/.env
+  #   depends_on:
+  #     - api
+
 volumes:
   mysql_data:

@@ -7,6 +7,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  app.enableCors({
+    origin: '*',
+    methods: 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,UPDATE',
+    preflightContinue: false,
+    optionsSuccessStatus: 200,
+    allowedHeaders:
+      'Access-Control-Allow-Origin,Origin,X-Requested-With,Content-Type,Accept,Authorization,authorization,X-Forwarded-for',
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Parking API')
     .setVersion('1.0')
