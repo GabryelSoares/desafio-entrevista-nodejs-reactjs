@@ -11,9 +11,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'http://localhost:3001',
-      'front-nextjs14-drconsulta-git-main-gabryelsoares.vercel.app',
-      'front-nextjs14-drconsulta-hckar0y0a-gabryelsoares.vercel.app',
-      'https://front-nextjs14-drconsulta-p6dbwgggd-gabryelsoares.vercel.app',
+      'https://front-nextjs14-drconsulta.vercel.app',
     ],
     methods: 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,UPDATE',
     preflightContinue: false,
