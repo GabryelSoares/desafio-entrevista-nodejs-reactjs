@@ -14,11 +14,11 @@ import { AppController } from './app.controller';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'admin',
-      password: 'admin',
-      database: 'parking',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT || 3306),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
       synchronize: true,
     }),
