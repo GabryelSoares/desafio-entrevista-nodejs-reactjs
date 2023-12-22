@@ -5,8 +5,6 @@ WORKDIR /app
 COPY . .
 CMD ["npm", "install", "glob", "rimraf"]
 
-CMD ["yarn"]
-
 COPY . .
 RUN npm start
 
