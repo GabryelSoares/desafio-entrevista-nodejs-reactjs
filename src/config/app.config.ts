@@ -2,6 +2,9 @@
 
 export default {
   database: {
-    url: process.env.CLEARDB_DATABASE_URL,
+    host: process.env.DB_HOST,
+    username: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_USERNAME,
   },
 };
