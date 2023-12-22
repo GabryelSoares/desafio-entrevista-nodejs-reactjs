@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsString,
   Length,
+  Min,
   MinLength,
 } from 'class-validator';
 
@@ -43,12 +44,12 @@ export class CreateEstablishmentDto {
   phone: string;
 
   @IsNumber()
-  @IsNotEmpty()
+  @Min(10, { message: 'motorcycleSlots must be at least 10' })
   @ApiProperty()
   motorcycleSlots: number;
 
   @IsNumber()
-  @IsNotEmpty()
+  @Min(10, { message: 'carSlots must be at least 10' })
   @ApiProperty()
   carSlots: number;
 }
