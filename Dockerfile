@@ -6,6 +6,6 @@ COPY . .
 CMD ["npm", "install", "glob", "rimraf"]
 
 COPY . .
-RUN npm start
+RUN npm run start
 
 EXPOSE 3000
