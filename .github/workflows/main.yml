@@ -23,9 +23,9 @@ jobs:
           CI: true
       - name: npm start
         run: |
-          RUN echo "DATABASE_URL: $DB_HOST"
-          RUN echo "DATABASE_URL: $DB_NAME"
-          RUN echo "DATABASE_URL: $DB_USERNAME"
+          RUN echo "DB_HOST: $DB_HOST"
+          RUN echo "DB_NAME: $DB_NAME"
+          RUN echo "DB_USERNAME: $DB_USERNAME"
           npm start
         env:
           CI: true
