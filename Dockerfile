@@ -8,7 +8,6 @@ CMD ["npm", "install", "glob", "rimraf"]
 CMD ["yarn"]
 
 COPY . .
-RUN yarn prebuild && yarn build
+RUN npm start
 
 EXPOSE 3000
-CMD [ "node", "dist/main.js"]
