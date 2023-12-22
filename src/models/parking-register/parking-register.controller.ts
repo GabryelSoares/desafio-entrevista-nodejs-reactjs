@@ -33,8 +33,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
-@Controller('parkingRegisters')
-@ApiTags('parkingRegisters')
+@Controller('parking-registers')
+@ApiTags('Parking Registers')
 export class ParkingRegisterController {
   @Inject(CreateParkingRegisterUseCase)
   private readonly createParkingRegisterUseCase: CreateParkingRegisterUseCase;
