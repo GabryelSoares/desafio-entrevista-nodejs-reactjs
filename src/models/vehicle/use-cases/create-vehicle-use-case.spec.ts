@@ -73,14 +73,29 @@ describe('CreateVehicleUseCase', () => {
         plate: 'AAA-0A00',
         type: VehicleTypeEnum.MOTORCYCLE,
       };
+
+      jest.spyOn(vehicleRepository, 'findOneBy').mockResolvedValue(null);
+
+      jest.spyOn(vehicleRepository, 'create').mockReturnValue(vehicle);
+      jest.spyOn(vehicleRepository, 'save').mockResolvedValue(vehicle);
+
       const result = await createVehicleUseCase.execute(
         createVehicleDto,
         establishment.id,
       );
 
       expect(result).toEqual(vehicle);
-      expect(vehicleRepository.create).toHaveBeenCalledWith(createVehicleDto);
+      expect(vehicleRepository.findOneBy).toHaveBeenCalledWith({
+        plate: createVehicleDto.plate,
+        establishment: { id: establishment.id },
+      });
+      expect(vehicleRepository.create).toHaveBeenCalledWith({
+        ...createVehicleDto,
+        establishment: { id: establishment.id },
+      });
       expect(vehicleRepository.create).toHaveBeenCalledTimes(1);
+      expect(vehicleRepository.save).toHaveBeenCalledWith(vehicle);
+      expect(vehicleRepository.save).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an exception', () => {

@@ -24,8 +24,11 @@ export class CreateVehicleUseCase {
       throw new VehicleAlreadyExistsException(createVehicleDto.plate);
     }
 
-    return await this.vehicleRepository.save(
-      this.vehicleRepository.create(createVehicleDto),
-    );
+    const newVehicle = this.vehicleRepository.create({
+      ...createVehicleDto,
+      establishment: { id: establishmentId },
+    });
+
+    return await this.vehicleRepository.save(newVehicle);
   }
 }
