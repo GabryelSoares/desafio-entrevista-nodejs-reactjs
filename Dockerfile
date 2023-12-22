@@ -1,13 +1,13 @@
 FROM node:20
 
-WORKDIR /usr/projeto-revenda-backend
+WORKDIR /app
 
-CMD ["npm", "install", "glob", "rimraf"]
+COPY package*.json ./
 
-CMD ["npm", "install"]
+RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "build"]
+EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "start"]
