@@ -21,6 +21,11 @@ import { ConfigModule } from '@nestjs/config';
       type: 'mysql',
       url: 'mysql://b9621f126a11e0:3ee3b689@us-cluster-east-01.k8s.cleardb.net/heroku_e3862d7794124e7?reconnect=true',
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
+      autoLoadEntities: true,
+      keepConnectionAlive: true,
+      extra: {
+        connectionLimit: 10,
+      },
     }),
     AuthModule,
     EstablishmentModule,
