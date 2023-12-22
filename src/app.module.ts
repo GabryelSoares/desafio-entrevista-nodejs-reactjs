@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppService } from './app.service';
 import { EstablishmentModule } from './models/establishment/establishment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,16 +10,16 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { ParkingRegisterController } from './models/parking-register/parking-register.controller';
 import { VehicleController } from './models/vehicle/vehicle.controller';
 import { AppController } from './app.controller';
+import configuration from './config/app.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      load: [() => configuration],
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT || 3306),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      url: process.env.NEXT_PUBLIC_CLEARDB_DATABASE_URL,
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
       synchronize: true,
     }),
