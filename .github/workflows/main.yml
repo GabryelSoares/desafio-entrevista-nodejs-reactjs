@@ -23,7 +23,6 @@ jobs:
           CI: true
       - name: npm start
         run: |
-          RUN echo "DB_HOST: $DB_HOST"
           RUN echo ${{secrets.DB_HOST}}
           npm start
         env:
