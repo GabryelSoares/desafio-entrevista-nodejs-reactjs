@@ -2,6 +2,6 @@
 
 export default {
   database: {
-    url: process.env.NEXT_PUBLIC_CLEARDB_DATABASE_URL,
+    url: process.env.CLEARDB_DATABASE_URL,
   },
 };
