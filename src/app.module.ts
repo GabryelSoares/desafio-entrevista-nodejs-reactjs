@@ -9,9 +9,14 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { ParkingRegisterController } from './models/parking-register/parking-register.controller';
 import { VehicleController } from './models/vehicle/vehicle.controller';
 import { AppController } from './app.controller';
+import configuration from './config/app.config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
