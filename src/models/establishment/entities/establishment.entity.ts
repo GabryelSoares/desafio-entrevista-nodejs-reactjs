@@ -55,12 +55,14 @@ export class Establishment {
   @OneToMany(
     () => ParkingRegister,
     (parkingRegister) => parkingRegister.establishment,
-    { lazy: true, eager: false },
+    { lazy: true, eager: false, onDelete: 'CASCADE' },
   )
   @ApiProperty({ type: () => ParkingRegister })
   parkingRegisters: ParkingRegister[];
 
-  @OneToMany(() => Vehicle, (vehicle) => vehicle.establishment)
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.establishment, {
+    onDelete: 'CASCADE',
+  })
   vehicles: Vehicle[];
 
   constructor(partial: Partial<Establishment>) {
