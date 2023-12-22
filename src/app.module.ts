@@ -19,7 +19,7 @@ import configuration from './config/app.config';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      url: process.env.NEXT_PUBLIC_CLEARDB_DATABASE_URL,
+      url: process.env.CLEARDB_DATABASE_URL,
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
       synchronize: true,
     }),
