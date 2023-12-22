@@ -34,3 +34,4 @@ Rodar o back local
 
 **http://localhost:3000/swagger** Swagger
 **http://localhost:3001** Front NextJS
+
