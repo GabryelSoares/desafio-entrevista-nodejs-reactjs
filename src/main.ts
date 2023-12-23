@@ -12,6 +12,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://localhost:3001',
       'https://front-nextjs14-drconsulta.vercel.app',
+      'https://front-tests.vercel.app',
     ],
     methods: 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,UPDATE',
     preflightContinue: false,
