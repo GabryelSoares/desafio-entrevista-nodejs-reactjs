@@ -59,6 +59,7 @@ export class AuthController {
     type: BadRequestSwagger,
   })
   signIn(@Body() body: SignInDto) {
+    console.log('signIn > body:: ', body);
     return this.signInUseCase.execute(body);
   }
 }
