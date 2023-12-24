@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Inject, Get } from '@nestjs/common';
+import { Controller, Post, Body, Inject, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { CreateEstablishmentDto } from 'src/models/establishment/dto/create-establishment.dto';
@@ -58,8 +58,8 @@ export class AuthController {
     description: 'Invalid params',
     type: BadRequestSwagger,
   })
-  signIn(@Body() body: SignInDto) {
-    console.log('signIn > body:: ', body);
-    return this.signInUseCase.execute(body);
+  signIn(@Query() query: SignInDto) {
+    console.log('signIn > body:: ', query);
+    return this.signInUseCase.execute(query);
   }
 }
