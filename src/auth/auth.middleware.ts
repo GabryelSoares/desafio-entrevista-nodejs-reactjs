@@ -13,7 +13,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     if (token) {
       try {
-        const decoded: any = jwt.verify(token, 'JWT_SECRET');
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET);
         req.establishmentId = decoded.establishmentId;
         next();
       } catch (err) {

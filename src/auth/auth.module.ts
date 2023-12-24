@@ -12,7 +12,7 @@ import { SignInUseCase } from './use-cases/sign-in-use-case';
     EstablishmentModule,
     JwtModule.register({
       global: true,
-      secret: 'JWT_SECRET',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '10h' },
     }),
   ],
