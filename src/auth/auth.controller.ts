@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Inject } from '@nestjs/common';
+import { Controller, Post, Body, Inject, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { CreateEstablishmentDto } from 'src/models/establishment/dto/create-establishment.dto';
@@ -43,6 +43,22 @@ export class AuthController {
     type: BadRequestSwagger,
   })
   login(@Body() body: SignInDto) {
+    return this.signInUseCase.execute(body);
+  }
+
+  @Get('/sign-in')
+  @ApiOperation({ summary: 'Sign in' })
+  @ApiResponse({
+    status: 201,
+    description: 'Sign in successfully',
+    type: SignInDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid params',
+    type: BadRequestSwagger,
+  })
+  signIn(@Body() body: SignInDto) {
     return this.signInUseCase.execute(body);
   }
 }
