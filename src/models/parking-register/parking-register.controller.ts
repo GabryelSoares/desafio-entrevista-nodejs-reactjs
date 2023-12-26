@@ -47,7 +47,7 @@ export class ParkingRegisterController {
   @Inject(ExitRegisterUseCase)
   private readonly updateParkingRegisterUseCase: ExitRegisterUseCase;
 
-  @Post()
+  @Post('/entry')
   @ApiOperation({ summary: 'Create entry register' })
   @ApiResponse({
     status: 201,
@@ -102,7 +102,7 @@ export class ParkingRegisterController {
     );
   }
 
-  @Patch()
+  @Patch('/exit')
   @ApiOperation({ summary: 'Exit register' })
   @ApiResponse({
     status: 201,
