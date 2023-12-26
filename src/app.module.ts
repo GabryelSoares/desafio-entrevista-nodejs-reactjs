@@ -29,7 +29,6 @@ import { ConfigModule } from '@nestjs/config';
         reconnectTries: 3,
       },
       timezone: '-180',
-      logging: true,
     }),
     AuthModule,
     EstablishmentModule,
