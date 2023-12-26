@@ -11,6 +11,9 @@ Criar uma API REST para gerenciar um estacionamento de carros e motos.
 - Swagger
 - NextJS
 
+## Api disponível com deploy realizado através da Heroku + Github Actions
+URL: https://parking-app-2d792385d201.herokuapp.com/swagger
+
 ## Inicialização
 
 #### Banco
