@@ -14,6 +14,9 @@ Criar uma API REST para gerenciar um estacionamento de carros e motos.
 ## Api disponível com deploy realizado através da Heroku + Github Actions
 URL: https://parking-app-2d792385d201.herokuapp.com/swagger
 
+## App disponível com deploy realizado através da Vercel
+Frontend: https://front-nextjs14-drconsulta.vercel.app/
+
 ## Inicialização
 
 #### Banco
