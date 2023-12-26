@@ -23,12 +23,7 @@ import { ConfigModule } from '@nestjs/config';
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
       autoLoadEntities: true,
       keepConnectionAlive: true,
-      extra: {
-        connectionLimit: 10,
-        connectTimeout: 10000,
-        reconnectTries: 3,
-      },
-      timezone: '-180',
+      timezone: '-03:00',
     }),
     AuthModule,
     EstablishmentModule,
