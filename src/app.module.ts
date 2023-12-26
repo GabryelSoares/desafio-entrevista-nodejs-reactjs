@@ -25,6 +25,8 @@ import { ConfigModule } from '@nestjs/config';
       keepConnectionAlive: true,
       extra: {
         connectionLimit: 10,
+        connectTimeout: 10000,
+        reconnectTries: 3,
       },
     }),
     AuthModule,
