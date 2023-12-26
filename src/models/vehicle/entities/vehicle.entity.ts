@@ -32,6 +32,7 @@ export class Vehicle {
   color: string;
 
   @ApiProperty()
+  @Column()
   plate: string;
 
   @Column({
