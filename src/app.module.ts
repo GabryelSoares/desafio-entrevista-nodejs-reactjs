@@ -28,6 +28,8 @@ import { ConfigModule } from '@nestjs/config';
         connectTimeout: 10000,
         reconnectTries: 3,
       },
+      timezone: 'America/Sao_Paulo',
+      logging: true,
     }),
     AuthModule,
     EstablishmentModule,
