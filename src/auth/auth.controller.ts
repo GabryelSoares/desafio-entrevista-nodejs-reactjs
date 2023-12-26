@@ -27,6 +27,7 @@ export class AuthController {
     type: BadRequestSwagger,
   })
   create(@Body() createEstablishmentDto: CreateEstablishmentDto) {
+    console.log('createEstablishmentDto:: ', createEstablishmentDto);
     return this.signUpUseCase.execute(createEstablishmentDto);
   }
 
