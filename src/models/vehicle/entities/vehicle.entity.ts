@@ -31,7 +31,6 @@ export class Vehicle {
   @ApiProperty()
   color: string;
 
-  @Column({ unique: true })
   @ApiProperty()
   plate: string;
 
