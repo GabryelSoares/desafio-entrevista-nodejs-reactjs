@@ -3,7 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 export class EstablishmentAlreadyExistsException extends HttpException {
   constructor(cnpj: string) {
     super(
-      `Establishment with CNPJ ${cnpj} already exists`,
+      `Já existe um estabelecimento cadastrado com o CNPJ ${cnpj}.`,
       HttpStatus.CONFLICT,
     );
   }
